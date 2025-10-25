@@ -51,6 +51,7 @@ import {
   TrendingUp,
   Notifications,
   Schedule,
+  EventAvailable,
 } from '@mui/icons-material';
 import { fetchEvents } from '../redux/slices/eventSlice';
 import { fetchLostItems } from '../redux/slices/lostItemSlice';
@@ -460,10 +461,6 @@ const AdminDashboard = () => {
                           </Box>
                           <Box sx={{ opacity: 0.8 }}>{stat.icon}</Box>
                         </Box>
-                        <Box display="flex" alignItems="center" mt={1}>
-                          <TrendingUp fontSize="small" sx={{ mr: 0.5 }} />
-                          <Typography variant="caption">{stat.trend}</Typography>
-                        </Box>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -633,6 +630,303 @@ const AdminDashboard = () => {
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
+          {/* Users Tab */}
+          {activeTab === 0 && (
+            <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+              <Box p={2} display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="h6">User Management</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Total: {users.length} users
+                </Typography>
+              </Box>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>User</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Role</TableCell>
+                      <TableCell>Department</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell align="right">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {users.map((user) => (
+                      <TableRow key={user._id} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                        <TableCell>
+                          <Box display="flex" alignItems="center" gap={1}>
+                            <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                              {user.name.charAt(0)}
+                            </Avatar>
+                            <Box>
+                              <Typography variant="body2" fontWeight="medium">
+                                {user.name}
+                              </Typography>
+                              {user.studentId && (
+                                <Typography variant="caption" color="text.secondary">
+                                  ID: {user.studentId}
+                                </Typography>
+                              )}
+                            </Box>
+                          </Box>
+                        </TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={user.role}
+                            size="small"
+                            color={
+                              user.role === 'admin'
+                                ? 'error'
+                                : user.role === 'faculty'
+                                ? 'primary'
+                                : 'default'
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>{user.department || 'N/A'}</TableCell>
+                        <TableCell>
+                          <Chip
+                            icon={user.isActive ? <CheckCircle /> : <Block />}
+                            label={user.isActive ? 'Active' : 'Inactive'}
+                            size="small"
+                            color={user.isActive ? 'success' : 'default'}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleEditRole(user)}
+                            title="Edit Role"
+                          >
+                            <Edit fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDeactivateUser(user._id)}
+                            title="Deactivate"
+                            color="error"
+                          >
+                            <Block fontSize="small" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+
+          {/* Events Tab */}
+          {activeTab === 1 && (
+            <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+              <Box p={2}>
+                <Typography variant="h6">Event Management</Typography>
+              </Box>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Event</TableCell>
+                      <TableCell>Category</TableCell>
+                      <TableCell>Date & Time</TableCell>
+                      <TableCell>Venue</TableCell>
+                      <TableCell>Created By</TableCell>
+                      <TableCell>Interested</TableCell>
+                      <TableCell>Registrations</TableCell>
+                      <TableCell align="center">Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {events.slice(0, 10).map((event) => (
+                      <TableRow key={event._id} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight="medium">
+                            {event.title}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip label={event.category} size="small" />
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2">
+                            {event.date ? format(new Date(event.date), 'MMM dd, yyyy') : 'N/A'}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {event.time || 'N/A'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{event.venue}</TableCell>
+                        <TableCell>{event.createdBy?.name || event.organizerName || 'Unknown'}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={event.interestedUsers?.length || 0}
+                            size="small"
+                            color="success"
+                            variant="outlined"
+                            icon={<EventAvailable />}
+                            sx={{ cursor: 'pointer' }}
+                            onClick={() => navigate(`/events/${event._id}`)}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<People />}
+                            onClick={() => navigate(`/events/${event._id}`)}
+                            disabled={!event.registeredUsers || event.registeredUsers.length === 0}
+                          >
+                            {event.registeredUsers?.length || 0}
+                            {event.maxParticipants && `/${event.maxParticipants}`}
+                          </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Button
+                            size="small"
+                            onClick={() => navigate(`/events/${event._id}`)}
+                          >
+                            View Details
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+
+          {/* Lost & Found Tab */}
+          {activeTab === 2 && (
+            <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+              <Box p={2}>
+                <Typography variant="h6">Lost & Found Management</Typography>
+              </Box>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Item</TableCell>
+                      <TableCell>Type</TableCell>
+                      <TableCell>Category</TableCell>
+                      <TableCell>Location</TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Reporter</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {items.slice(0, 10).map((item) => (
+                      <TableRow key={item._id} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight="medium">
+                            {item.title}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={item.type}
+                            size="small"
+                            color={item.type === 'lost' ? 'error' : 'success'}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip label={item.category} size="small" variant="outlined" />
+                        </TableCell>
+                        <TableCell>{item.location}</TableCell>
+                        <TableCell>
+                          {format(new Date(item.date), 'MMM dd, yyyy')}
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={item.status}
+                            size="small"
+                            color={item.status === 'claimed' ? 'success' : 'default'}
+                          />
+                        </TableCell>
+                        <TableCell>{item.reportedBy?.name || 'Anonymous'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+
+          {/* Feedback Tab */}
+          {activeTab === 3 && (
+            <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+              <Box p={2}>
+                <Typography variant="h6">Feedback Management</Typography>
+              </Box>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Title</TableCell>
+                      <TableCell>Category</TableCell>
+                      <TableCell>Priority</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Submitted By</TableCell>
+                      <TableCell>Date</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {feedbackList.slice(0, 10).map((feedback) => (
+                      <TableRow key={feedback._id} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight="medium">
+                            {feedback.subject}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Chip label={feedback.category} size="small" />
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={feedback.priority}
+                            size="small"
+                            color={
+                              feedback.priority === 'high'
+                                ? 'error'
+                                : feedback.priority === 'medium'
+                                ? 'warning'
+                                : 'default'
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={feedback.status}
+                            size="small"
+                            color={
+                              feedback.status === 'resolved'
+                                ? 'success'
+                                : feedback.status === 'in-progress'
+                                ? 'info'
+                                : 'default'
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>
+                          {feedback.isAnonymous
+                            ? 'Anonymous'
+                            : feedback.submittedBy?.name || 'Unknown'}
+                        </TableCell>
+                        <TableCell>
+                          {format(new Date(feedback.createdAt), 'MMM dd, yyyy')}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+
           {/* Pending Approvals Tab */}
           {activeTab === 4 && (
             <Box>
@@ -945,18 +1239,6 @@ const AdminDashboard = () => {
                 </motion.div>
               )}
             </Box>
-          )}
-
-          {/* Other tabs content would go here */}
-          {activeTab !== 4 && (
-            <Paper sx={{ p: 3, borderRadius: 2 }}>
-              <Typography variant="body1" color="text.secondary">
-                Content for tab {activeTab} (Users, Events, Lost & Found, Feedback)
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                This section would show the existing content for each respective tab.
-              </Typography>
-            </Paper>
           )}
         </motion.div>
       </AnimatePresence>
