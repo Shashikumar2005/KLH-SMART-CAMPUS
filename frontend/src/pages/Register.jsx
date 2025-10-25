@@ -306,33 +306,10 @@ const Register = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label="Role"
-                  {...register('role')}
-                  error={!!errors.role}
-                  helperText={errors.role?.message}
-                  defaultValue="student"
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
-                      },
-                      '&.Mui-focused': {
-                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
-                      },
-                    },
-                  }}
-                >
-                  <MenuItem value="student">Student</MenuItem>
-                  <MenuItem value="faculty">Faculty</MenuItem>
-                </TextField>
-              </Grid>
+              {/* Role is auto-detected from email - hidden field */}
+              <input type="hidden" {...register('role')} />
 
+              {/* Student ID - Only show for students */}
               {selectedRole === 'student' && (
                 <Grid item xs={12} sm={6}>
                   <TextField
@@ -340,21 +317,45 @@ const Register = () => {
                     label="Student ID"
                     {...register('studentId')}
                     error={!!errors.studentId}
-                    helperText={errors.studentId?.message || 'Will be auto-filled if email is your student ID'}
+                    helperText={errors.studentId?.message || 'Auto-filled from your email'}
                     placeholder="e.g., 2310080030"
+                    disabled
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         borderRadius: 2,
                         transition: 'all 0.3s ease',
-                        '&:hover': {
-                          boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
-                        },
-                        '&.Mui-focused': {
-                          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
-                        },
+                        backgroundColor: 'rgba(0,0,0,0.02)',
                       },
                     }}
                   />
+                </Grid>
+              )}
+
+              {/* Show detected role badge */}
+              {detectedRole && (
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: 2,
+                      background: detectedRole === 'student' 
+                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                        : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                      color: 'white',
+                      textAlign: 'center',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    }}
+                  >
+                    <Typography variant="body1" fontWeight="600">
+                      ✓ Detected as {detectedRole === 'student' ? '👨‍🎓 Student' : '👨‍🏫 Faculty'}
+                    </Typography>
+                    <Typography variant="caption">
+                      {detectedRole === 'student' 
+                        ? 'Student ID will be automatically assigned from your email'
+                        : 'Faculty account with full teaching privileges'
+                      }
+                    </Typography>
+                  </Box>
                 </Grid>
               )}
 
