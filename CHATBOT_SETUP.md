@@ -4,7 +4,7 @@
 The Smart Campus chatbot is powered by Google's Gemini AI and provides intelligent assistance for campus-related queries.
 
 ## Features
-- 🤖 AI-powered responses using Google Gemini Pro
+- 🤖 AI-powered responses using Google Gemini 1.5 Flash
 - 💬 Contextual conversation history
 - 📋 Quick suggestions for common queries
 - ❓ FAQs about campus services
