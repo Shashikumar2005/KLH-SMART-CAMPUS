@@ -20,24 +20,30 @@ const notificationSlice = createSlice({
         priority: action.payload.priority || 'normal', // 'low', 'normal', 'high', 'urgent'
       };
       
-      // Prevent duplicate notifications (check last 5 notifications)
-      const isDuplicate = state.notifications.slice(0, 5).some(
+      // Prevent duplicate notifications (check last 3 notifications only)
+      const isDuplicate = state.notifications.slice(0, 3).some(
         n => n.message === newNotification.message && 
              n.type === newNotification.type &&
-             (Date.now() - new Date(n.timestamp).getTime()) < 5000 // within 5 seconds
+             (Date.now() - new Date(n.timestamp).getTime()) < 3000 // within 3 seconds
       );
       
       if (!isDuplicate) {
         state.notifications.unshift(newNotification);
         state.unreadCount += 1;
         
+        console.log('✅ Notification added:', newNotification.message);
+        console.log('📊 Total notifications:', state.notifications.length);
+        console.log('🔔 Unread count:', state.unreadCount);
+        
         // Limit notifications to 100 to prevent memory issues
         if (state.notifications.length > 100) {
           const removed = state.notifications.pop();
           if (!removed.read) {
-            state.unreadCount -= 1;
+            state.unreadCount = Math.max(0, state.unreadCount - 1);
           }
         }
+      } else {
+        console.log('⚠️ Duplicate notification prevented:', newNotification.message);
       }
     },
     markAsRead: (state, action) => {
@@ -45,11 +51,15 @@ const notificationSlice = createSlice({
       if (notification && !notification.read) {
         notification.read = true;
         state.unreadCount = Math.max(0, state.unreadCount - 1);
+        console.log('✓ Marked as read:', notification.message);
+        console.log('📊 Unread count:', state.unreadCount);
       }
     },
     markAllAsRead: (state) => {
+      const unreadCount = state.notifications.filter(n => !n.read).length;
       state.notifications.forEach(n => n.read = true);
       state.unreadCount = 0;
+      console.log(`✓ Marked ${unreadCount} notifications as read`);
     },
     removeNotification: (state, action) => {
       const index = state.notifications.findIndex(n => n.id === action.payload);

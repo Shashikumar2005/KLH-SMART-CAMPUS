@@ -40,10 +40,12 @@ function App() {
   useEffect(() => {
     // Initialize socket connection if authenticated
     if (isAuthenticated && token) {
+      console.log('🔌 Initializing socket connection...');
       initializeSocket(token);
 
       // Subscribe to real-time events
       subscribeToEvent('notification', (data) => {
+        console.log('🔔 Received notification:', data);
         dispatch(addNotification({
           ...data,
           id: `notif-${Date.now()}-${Math.random()}`,
@@ -52,6 +54,7 @@ function App() {
       });
 
       subscribeToEvent('newEvent', (event) => {
+        console.log('📅 New event received:', event.title);
         dispatch(addEventRealtime(event));
         dispatch(addNotification({
           type: 'info',
@@ -63,6 +66,7 @@ function App() {
       });
 
       subscribeToEvent('eventUpdated', (event) => {
+        console.log('📅 Event updated:', event.title);
         dispatch(updateEventRealtime(event));
         dispatch(addNotification({
           type: 'info',

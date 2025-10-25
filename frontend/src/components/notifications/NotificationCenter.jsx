@@ -51,6 +51,7 @@ import {
   clearReadNotifications,
   toggleSound,
   setFilterType,
+  addNotification,
 } from '../../redux/slices/notificationSlice';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -114,6 +115,17 @@ const NotificationCenter = () => {
 
   const handleToggleSound = () => {
     dispatch(toggleSound());
+  };
+
+  const handleTestNotification = () => {
+    dispatch(addNotification({
+      type: 'info',
+      category: 'test',
+      message: 'Test Notification',
+      description: 'This is a test notification to verify the system is working correctly.',
+      priority: 'normal',
+      timestamp: new Date().toISOString(),
+    }));
   };
 
   const open = Boolean(anchorEl);
@@ -253,6 +265,11 @@ const NotificationCenter = () => {
                 <Tooltip title={soundEnabled ? 'Mute' : 'Unmute'}>
                   <IconButton size="small" onClick={handleToggleSound} sx={{ color: 'white' }}>
                     {soundEnabled ? <VolumeUp /> : <VolumeOff />}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Send test notification">
+                  <IconButton size="small" onClick={handleTestNotification} sx={{ color: 'white' }}>
+                    <NotificationsActive />
                   </IconButton>
                 </Tooltip>
               </Box>

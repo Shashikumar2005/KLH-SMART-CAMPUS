@@ -5,26 +5,45 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 let socket = null;
 
 export const initializeSocket = (token) => {
-  if (!socket) {
+  if (!socket || !socket.connected) {
     socket = io(SOCKET_URL, {
       auth: {
         token,
       },
       reconnection: true,
       reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 10,
+      transports: ['websocket', 'polling'],
     });
 
     socket.on('connect', () => {
-      console.log('Socket connected');
+      console.log('✅ Socket connected successfully');
+      console.log('🔌 Socket ID:', socket.id);
     });
 
-    socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+    socket.on('disconnect', (reason) => {
+      console.log('❌ Socket disconnected:', reason);
     });
 
     socket.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
+      console.error('🔴 Socket connection error:', error.message);
+    });
+
+    socket.on('reconnect', (attemptNumber) => {
+      console.log('🔄 Socket reconnected after', attemptNumber, 'attempts');
+    });
+
+    socket.on('reconnect_attempt', (attemptNumber) => {
+      console.log('🔄 Attempting to reconnect...', attemptNumber);
+    });
+
+    socket.on('reconnect_error', (error) => {
+      console.error('🔴 Reconnection error:', error.message);
+    });
+
+    socket.on('reconnect_failed', () => {
+      console.error('🔴 Socket reconnection failed');
     });
   }
 
