@@ -17,9 +17,8 @@ import {
   IconButton,
   MenuItem,
   Grid,
-  Chip,
 } from '@mui/material';
-import { Visibility, VisibilityOff, InfoOutlined } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { register as registerUser, clearError } from '../redux/slices/authSlice';
 import { registerSchema } from '../utils/validators';
 import toast from 'react-hot-toast';
@@ -114,22 +113,6 @@ const Register = () => {
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
-            </Alert>
-          )}
-
-          <Alert severity="info" icon={<InfoOutlined />} sx={{ mt: 2 }}>
-            <Typography variant="body2" fontWeight="bold">Email Format Guide:</Typography>
-            <Typography variant="body2">
-              • Students: Use email starting with numbers (e.g., 2310080030@klh.edu.in)
-            </Typography>
-            <Typography variant="body2">
-              • Faculty: Use email starting with letters (e.g., name123@klh.edu.in)
-            </Typography>
-          </Alert>
-
-          {detectedRole && (
-            <Alert severity="success" sx={{ mt: 2 }}>
-              ✓ Role automatically detected as <strong>{detectedRole.toUpperCase()}</strong> from your email
             </Alert>
           )}
 
@@ -240,17 +223,6 @@ const Register = () => {
                   error={!!errors.role}
                   helperText={errors.role?.message}
                   defaultValue="student"
-                  InputProps={{
-                    startAdornment: detectedRole && (
-                      <InputAdornment position="start">
-                        <Chip 
-                          label="Auto-detected" 
-                          color="success" 
-                          size="small"
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
                 >
                   <MenuItem value="student">Student</MenuItem>
                   <MenuItem value="faculty">Faculty</MenuItem>
