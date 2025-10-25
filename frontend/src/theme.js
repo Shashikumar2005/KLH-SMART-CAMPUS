@@ -25,8 +25,8 @@ export const getTheme = (mode) => createTheme({
       glass: mode === 'light' ? 'rgba(255, 255, 255, 0.98)' : 'rgba(30, 41, 59, 0.98)',
     },
     text: {
-      primary: mode === 'light' ? '#0f172a' : '#f1f5f9',
-      secondary: mode === 'light' ? '#475569' : '#cbd5e1',
+      primary: mode === 'light' ? '#000000' : '#ffffff',
+      secondary: mode === 'light' ? '#1e293b' : '#e2e8f0',
     },
     divider: mode === 'light' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)',
     // Section-specific colors
@@ -95,79 +95,82 @@ export const getTheme = (mode) => createTheme({
       fontSize: '2.5rem',
       lineHeight: 1.2,
       letterSpacing: '-0.025em',
-      color: mode === 'light' ? '#0f172a' : '#f1f5f9',
+      color: mode === 'light' ? '#000000' : '#ffffff',
     },
     h2: {
       fontWeight: 700,
       fontSize: '2rem',
       lineHeight: 1.3,
       letterSpacing: '-0.02em',
-      color: mode === 'light' ? '#0f172a' : '#f1f5f9',
+      color: mode === 'light' ? '#000000' : '#ffffff',
     },
     h3: {
       fontWeight: 700,
       fontSize: '1.75rem',
       lineHeight: 1.35,
       letterSpacing: '-0.015em',
-      color: mode === 'light' ? '#0f172a' : '#f1f5f9',
+      color: mode === 'light' ? '#000000' : '#ffffff',
     },
     h4: {
-      fontWeight: 600,
+      fontWeight: 700,
       fontSize: '1.5rem',
       lineHeight: 1.4,
-      color: mode === 'light' ? '#1e293b' : '#e2e8f0',
+      color: mode === 'light' ? '#000000' : '#ffffff',
     },
     h5: {
       fontWeight: 600,
       fontSize: '1.25rem',
       lineHeight: 1.5,
-      color: mode === 'light' ? '#1e293b' : '#e2e8f0',
+      color: mode === 'light' ? '#000000' : '#ffffff',
     },
     h6: {
       fontWeight: 600,
       fontSize: '1.125rem',
       lineHeight: 1.5,
-      color: mode === 'light' ? '#334155' : '#cbd5e1',
+      color: mode === 'light' ? '#000000' : '#f1f5f9',
     },
     subtitle1: {
       fontSize: '1rem',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: 1.75,
-      color: mode === 'light' ? '#475569' : '#cbd5e1',
+      color: mode === 'light' ? '#1e293b' : '#e2e8f0',
     },
     subtitle2: {
       fontSize: '0.875rem',
-      fontWeight: 500,
+      fontWeight: 600,
       lineHeight: 1.57,
-      color: mode === 'light' ? '#64748b' : '#94a3b8',
+      color: mode === 'light' ? '#1e293b' : '#e2e8f0',
     },
     body1: {
       fontSize: '1rem',
+      fontWeight: 500,
       lineHeight: 1.6,
-      color: mode === 'light' ? '#475569' : '#cbd5e1',
+      color: mode === 'light' ? '#1e293b' : '#e2e8f0',
     },
     body2: {
       fontSize: '0.875rem',
+      fontWeight: 500,
       lineHeight: 1.6,
-      color: mode === 'light' ? '#64748b' : '#94a3b8',
+      color: mode === 'light' ? '#334155' : '#cbd5e1',
     },
     button: {
       textTransform: 'none',
-      fontWeight: 600,
+      fontWeight: 700,
       fontSize: '0.9375rem',
       letterSpacing: '0.015em',
     },
     caption: {
       fontSize: '0.75rem',
+      fontWeight: 500,
       lineHeight: 1.66,
-      color: mode === 'light' ? '#64748b' : '#94a3b8',
+      color: mode === 'light' ? '#475569' : '#94a3b8',
     },
     overline: {
       fontSize: '0.75rem',
-      fontWeight: 600,
+      fontWeight: 700,
       letterSpacing: '0.1em',
       textTransform: 'uppercase',
-      color: mode === 'light' ? '#64748b' : '#94a3b8',
+      color: mode === 'light' ? '#475569' : '#94a3b8',
     },
   },
   shape: {
@@ -239,6 +242,12 @@ export const getTheme = (mode) => createTheme({
         },
         '*': {
           scrollBehavior: 'smooth',
+        },
+        'p, span, div, label, input, textarea': {
+          color: mode === 'light' ? '#1e293b !important' : '#e2e8f0 !important',
+        },
+        'h1, h2, h3, h4, h5, h6': {
+          color: mode === 'light' ? '#000000 !important' : '#ffffff !important',
         },
         '*::-webkit-scrollbar': {
           width: '10px',
@@ -324,6 +333,28 @@ export const getTheme = (mode) => createTheme({
         },
       },
     },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          '&.MuiTypography-h1, &.MuiTypography-h2, &.MuiTypography-h3, &.MuiTypography-h4, &.MuiTypography-h5, &.MuiTypography-h6': {
+            color: mode === 'light' ? '#000000' : '#ffffff',
+            fontWeight: 700,
+          },
+          '&.MuiTypography-body1': {
+            color: mode === 'light' ? '#1e293b' : '#e2e8f0',
+            fontWeight: 500,
+          },
+          '&.MuiTypography-body2': {
+            color: mode === 'light' ? '#334155' : '#cbd5e1',
+            fontWeight: 500,
+          },
+          '&.MuiTypography-subtitle1, &.MuiTypography-subtitle2': {
+            color: mode === 'light' ? '#1e293b' : '#e2e8f0',
+            fontWeight: 600,
+          },
+        },
+      },
+    },
     MuiCard: {
       styleOverrides: {
         root: {
@@ -343,6 +374,13 @@ export const getTheme = (mode) => createTheme({
           cursor: 'pointer',
           position: 'relative',
           overflow: 'hidden',
+          color: mode === 'light' ? '#1e293b' : '#e2e8f0',
+          '& *': {
+            color: 'inherit',
+          },
+          '& h1, & h2, & h3, & h4, & h5, & h6': {
+            color: mode === 'light' ? '#000000' : '#ffffff',
+          },
           '&::after': {
             content: '""',
             position: 'absolute',
