@@ -378,62 +378,97 @@ const AdminDashboard = () => {
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {stats.map((stat, index) => (
             <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
-              <motion.div variants={itemVariants} whileHover="hover" initial="rest">
-                <motion.div variants={cardHoverVariants}>
-                  <Card
-                    sx={{
-                      background: stat.gradient,
-                      color: 'white',
-                      height: '100%',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      cursor: 'pointer',
-                      border: stat.highlight ? '3px solid #FFD700' : 'none',
-                    }}
-                    onClick={() => {
-                      if (stat.title === 'Clubs' || stat.title === 'Polls') {
-                        setActiveTab(4); // Go to pending approvals tab
-                      }
-                    }}
-                  >
+              <Tooltip
+                title={
+                  <Box>
+                    <Typography variant="body2" fontWeight="bold">{stat.title}</Typography>
+                    <Typography variant="caption">{stat.details}</Typography>
+                    <br />
+                    <Typography variant="caption" sx={{ color: '#90EE90' }}>
+                      Trend: {stat.trend}
+                    </Typography>
                     {stat.highlight && (
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        style={{
-                          position: 'absolute',
-                          top: 10,
-                          right: 10,
-                          background: '#FFD700',
-                          borderRadius: '50%',
-                          width: 12,
-                          height: 12,
-                        }}
-                      />
+                      <>
+                        <br />
+                        <Typography variant="caption" sx={{ color: '#FFD700' }}>
+                          ⚠️ Needs Attention! Click to review
+                        </Typography>
+                      </>
                     )}
-                    <CardContent>
-                      <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                        <Box>
-                          <Typography variant="h3" fontWeight="bold">
-                            {stat.value}
-                          </Typography>
-                          <Typography variant="body2" sx={{ opacity: 0.9, mt: 0.5 }}>
-                            {stat.title}
-                          </Typography>
-                          <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                            {stat.details}
-                          </Typography>
+                  </Box>
+                }
+                arrow
+                placement="top"
+              >
+                <motion.div variants={itemVariants} whileHover="hover" initial="rest">
+                  <motion.div variants={cardHoverVariants}>
+                    <Card
+                      sx={{
+                        background: stat.gradient,
+                        color: 'white',
+                        height: '100%',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        border: stat.highlight ? '3px solid #FFD700' : 'none',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'translateY(-8px)',
+                        },
+                      }}
+                      onClick={() => {
+                        if (stat.title === 'Total Users') {
+                          setActiveTab(0);
+                        } else if (stat.title === 'Events') {
+                          setActiveTab(1);
+                        } else if (stat.title === 'Clubs' || stat.title === 'Polls') {
+                          setActiveTab(4);
+                        } else if (stat.title === 'Lost & Found') {
+                          setActiveTab(2);
+                        } else if (stat.title === 'Feedback') {
+                          setActiveTab(3);
+                        }
+                      }}
+                    >
+                      {stat.highlight && (
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          style={{
+                            position: 'absolute',
+                            top: 10,
+                            right: 10,
+                            background: '#FFD700',
+                            borderRadius: '50%',
+                            width: 12,
+                            height: 12,
+                          }}
+                        />
+                      )}
+                      <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                          <Box>
+                            <Typography variant="h3" fontWeight="bold">
+                              {stat.value}
+                            </Typography>
+                            <Typography variant="body2" sx={{ opacity: 0.9, mt: 0.5 }}>
+                              {stat.title}
+                            </Typography>
+                            <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                              {stat.details}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ opacity: 0.8 }}>{stat.icon}</Box>
                         </Box>
-                        <Box sx={{ opacity: 0.8 }}>{stat.icon}</Box>
-                      </Box>
-                      <Box display="flex" alignItems="center" mt={1}>
-                        <TrendingUp fontSize="small" sx={{ mr: 0.5 }} />
-                        <Typography variant="caption">{stat.trend}</Typography>
-                      </Box>
-                    </CardContent>
-                  </Card>
+                        <Box display="flex" alignItems="center" mt={1}>
+                          <TrendingUp fontSize="small" sx={{ mr: 0.5 }} />
+                          <Typography variant="caption">{stat.trend}</Typography>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
+              </Tooltip>
             </Grid>
           ))}
         </Grid>
@@ -482,28 +517,110 @@ const AdminDashboard = () => {
             '& .MuiTab-root': {
               fontWeight: 600,
               fontSize: '0.95rem',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                background: 'rgba(102, 126, 234, 0.1)',
+                transform: 'translateY(-2px)',
+              },
             },
             '& .Mui-selected': {
               color: '#667eea',
             },
           }}
         >
-          <Tab label={`Users (${users.length})`} />
-          <Tab label={`Events (${events.length})`} />
-          <Tab label={`Lost & Found (${items.length})`} />
-          <Tab label={`Feedback (${feedbackList.length})`} />
-          <Tab
-            label={
-              <Box display="flex" alignItems="center" gap={1}>
-                Pending Approvals
-                {totalPendingApprovals > 0 && (
-                  <Badge badgeContent={totalPendingApprovals} color="error">
-                    <Box />
-                  </Badge>
-                )}
+          <Tooltip 
+            title={
+              <Box>
+                <Typography variant="body2" fontWeight="bold">All Users</Typography>
+                <Typography variant="caption">Students: {users.filter((u) => u.role === 'student').length}</Typography>
+                <br />
+                <Typography variant="caption">Faculty: {users.filter((u) => u.role === 'faculty').length}</Typography>
+                <br />
+                <Typography variant="caption">Admins: {users.filter((u) => u.role === 'admin').length}</Typography>
               </Box>
             }
-          />
+            arrow
+            placement="top"
+          >
+            <Tab label={`Users (${users.length})`} />
+          </Tooltip>
+          
+          <Tooltip 
+            title={
+              <Box>
+                <Typography variant="body2" fontWeight="bold">Campus Events</Typography>
+                <Typography variant="caption">Upcoming: {events.filter((e) => new Date(e.date) >= new Date()).length}</Typography>
+                <br />
+                <Typography variant="caption">Past: {events.filter((e) => new Date(e.date) < new Date()).length}</Typography>
+              </Box>
+            }
+            arrow
+            placement="top"
+          >
+            <Tab label={`Events (${events.length})`} />
+          </Tooltip>
+          
+          <Tooltip 
+            title={
+              <Box>
+                <Typography variant="body2" fontWeight="bold">Lost & Found Items</Typography>
+                <Typography variant="caption">Lost: {items.filter((i) => i.type === 'lost').length}</Typography>
+                <br />
+                <Typography variant="caption">Found: {items.filter((i) => i.type === 'found').length}</Typography>
+                <br />
+                <Typography variant="caption">Claimed: {items.filter((i) => i.status === 'claimed').length}</Typography>
+              </Box>
+            }
+            arrow
+            placement="top"
+          >
+            <Tab label={`Lost & Found (${items.length})`} />
+          </Tooltip>
+          
+          <Tooltip 
+            title={
+              <Box>
+                <Typography variant="body2" fontWeight="bold">User Feedback</Typography>
+                <Typography variant="caption">Pending: {feedbackList.filter((f) => f.status === 'pending').length}</Typography>
+                <br />
+                <Typography variant="caption">Reviewed: {feedbackList.filter((f) => f.status === 'reviewed').length}</Typography>
+                <br />
+                <Typography variant="caption">Anonymous: {feedbackList.filter((f) => f.isAnonymous).length}</Typography>
+              </Box>
+            }
+            arrow
+            placement="top"
+          >
+            <Tab label={`Feedback (${feedbackList.length})`} />
+          </Tooltip>
+          
+          <Tooltip 
+            title={
+              <Box>
+                <Typography variant="body2" fontWeight="bold">Pending Approvals</Typography>
+                <Typography variant="caption">Clubs: {pendingClubs.length}</Typography>
+                <br />
+                <Typography variant="caption">Polls: {pendingPolls.length}</Typography>
+                <br />
+                <Typography variant="caption" sx={{ color: '#FFD700' }}>Click to review!</Typography>
+              </Box>
+            }
+            arrow
+            placement="top"
+          >
+            <Tab
+              label={
+                <Box display="flex" alignItems="center" gap={1}>
+                  Pending Approvals
+                  {totalPendingApprovals > 0 && (
+                    <Badge badgeContent={totalPendingApprovals} color="error">
+                      <Box />
+                    </Badge>
+                  )}
+                </Box>
+              }
+            />
+          </Tooltip>
         </Tabs>
       </Paper>
 
