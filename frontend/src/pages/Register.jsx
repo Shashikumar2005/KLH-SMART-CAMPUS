@@ -459,3 +459,5 @@ const Register = () => {
     </Box>
   );
 };
+
+export default Register;
