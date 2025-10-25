@@ -4,29 +4,29 @@ import { createTheme } from '@mui/material/styles';
 export const getTheme = (mode) => createTheme({
   palette: {
     mode,
-    // Primary: Trust & Education (Blue)
+    // Primary: Minimal Dark Gray/Slate
     primary: {
-      main: mode === 'light' ? '#1e40af' : '#60a5fa',
-      light: mode === 'light' ? '#3b82f6' : '#93c5fd',
-      dark: mode === 'light' ? '#1e3a8a' : '#3b82f6',
+      main: mode === 'light' ? '#0f172a' : '#60a5fa',
+      light: mode === 'light' ? '#334155' : '#93c5fd',
+      dark: mode === 'light' ? '#020617' : '#3b82f6',
       contrastText: '#ffffff',
     },
-    // Secondary: Energy & Innovation (Orange)
+    // Secondary: Neutral Gray
     secondary: {
-      main: mode === 'light' ? '#ea580c' : '#fb923c',
-      light: mode === 'light' ? '#f97316' : '#fdba74',
-      dark: mode === 'light' ? '#c2410c' : '#f97316',
+      main: mode === 'light' ? '#64748b' : '#94a3b8',
+      light: mode === 'light' ? '#94a3b8' : '#cbd5e1',
+      dark: mode === 'light' ? '#475569' : '#64748b',
       contrastText: '#ffffff',
     },
     // Background with subtle patterns
     background: {
       default: mode === 'light' ? '#f8fafc' : '#0f172a',
       paper: mode === 'light' ? '#ffffff' : '#1e293b',
-      glass: mode === 'light' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(30, 41, 59, 0.95)',
+      glass: mode === 'light' ? 'rgba(255, 255, 255, 0.98)' : 'rgba(30, 41, 59, 0.98)',
     },
     text: {
       primary: mode === 'light' ? '#0f172a' : '#f1f5f9',
-      secondary: mode === 'light' ? '#334155' : '#cbd5e1',
+      secondary: mode === 'light' ? '#475569' : '#cbd5e1',
     },
     divider: mode === 'light' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)',
     // Section-specific colors
@@ -231,8 +231,8 @@ export const getTheme = (mode) => createTheme({
       styleOverrides: {
         body: {
           background: mode === 'light'
-            ? 'linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%)'
-            : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+            ? '#f8fafc'
+            : '#0f172a',
           backgroundAttachment: 'fixed',
           minHeight: '100vh',
           scrollBehavior: 'smooth',
@@ -250,14 +250,14 @@ export const getTheme = (mode) => createTheme({
         },
         '*::-webkit-scrollbar-thumb': {
           background: mode === 'light'
-            ? 'linear-gradient(180deg, #3b82f6, #1e40af)'
-            : 'linear-gradient(180deg, #60a5fa, #3b82f6)',
+            ? '#cbd5e1'
+            : '#475569',
           borderRadius: '10px',
           border: mode === 'light' ? '2px solid #f1f5f9' : '2px solid #1e293b',
           '&:hover': {
             background: mode === 'light'
-              ? 'linear-gradient(180deg, #2563eb, #1e3a8a)'
-              : 'linear-gradient(180deg, #93c5fd, #60a5fa)',
+              ? '#94a3b8'
+              : '#64748b',
           },
         },
       },
@@ -295,13 +295,13 @@ export const getTheme = (mode) => createTheme({
         },
         contained: {
           boxShadow: mode === 'light'
-            ? '0px 4px 12px rgba(30, 64, 175, 0.25)'
+            ? '0px 2px 8px rgba(0, 0, 0, 0.15)'
             : '0px 4px 12px rgba(96, 165, 250, 0.25)',
           '&:hover': {
             boxShadow: mode === 'light'
-              ? '0px 8px 24px rgba(30, 64, 175, 0.35)'
+              ? '0px 8px 24px rgba(0, 0, 0, 0.25)'
               : '0px 8px 24px rgba(96, 165, 250, 0.35)',
-            transform: 'translateY(-2px)',
+            transform: 'translateY(-3px) scale(1.02)',
           },
         },
         outlined: {
@@ -309,16 +309,17 @@ export const getTheme = (mode) => createTheme({
           '&:hover': {
             borderWidth: 2,
             backgroundColor: mode === 'light'
-              ? 'rgba(30, 64, 175, 0.04)'
+              ? 'rgba(15, 23, 42, 0.04)'
               : 'rgba(96, 165, 250, 0.08)',
-            transform: 'translateY(-1px)',
+            transform: 'translateY(-2px) scale(1.01)',
           },
         },
         text: {
           '&:hover': {
             backgroundColor: mode === 'light'
-              ? 'rgba(30, 64, 175, 0.04)'
+              ? 'rgba(15, 23, 42, 0.04)'
               : 'rgba(96, 165, 250, 0.08)',
+            transform: 'scale(1.05)',
           },
         },
       },
@@ -369,7 +370,20 @@ export const getTheme = (mode) => createTheme({
           '&:active': {
             transform: 'translateY(-6px) scale(1.01)',
           },
-          animation: 'fadeInUp 0.5s ease-out',
+          animation: 'floatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          '@keyframes floatIn': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateY(40px) scale(0.9)',
+            },
+            '50%': {
+              transform: 'translateY(-5px) scale(1.02)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateY(0) scale(1)',
+            },
+          },
           '@keyframes fadeInUp': {
             '0%': {
               opacity: 0,
@@ -388,6 +402,31 @@ export const getTheme = (mode) => createTheme({
             '100%': {
               opacity: 1,
               transform: 'translateX(0)',
+            },
+          },
+          '@keyframes float': {
+            '0%, 100%': {
+              transform: 'translateY(0px)',
+            },
+            '50%': {
+              transform: 'translateY(-10px)',
+            },
+          },
+          '@keyframes pulse': {
+            '0%': {
+              boxShadow: mode === 'light'
+                ? '0 0 0 0 rgba(15, 23, 42, 0.4)'
+                : '0 0 0 0 rgba(96, 165, 250, 0.4)',
+            },
+            '70%': {
+              boxShadow: mode === 'light'
+                ? '0 0 0 10px rgba(15, 23, 42, 0)'
+                : '0 0 0 10px rgba(96, 165, 250, 0)',
+            },
+            '100%': {
+              boxShadow: mode === 'light'
+                ? '0 0 0 0 rgba(15, 23, 42, 0)'
+                : '0 0 0 0 rgba(96, 165, 250, 0)',
             },
           },
         },
@@ -447,33 +486,127 @@ export const getTheme = (mode) => createTheme({
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: mode === 'light'
-                ? 'rgba(30, 64, 175, 0.2)'
+                ? 'rgba(15, 23, 42, 0.15)'
                 : 'rgba(96, 165, 250, 0.2)',
-              borderWidth: 2,
-              transition: 'all 0.3s ease',
+              borderWidth: 1,
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             },
             '&:hover': {
-              transform: 'translateY(-1px)',
+              transform: 'translateY(-2px) scale(1.01)',
               boxShadow: mode === 'light'
-                ? '0px 4px 12px rgba(30, 64, 175, 0.1)'
+                ? '0px 4px 20px rgba(0, 0, 0, 0.08)'
                 : '0px 4px 12px rgba(96, 165, 250, 0.1)',
               '& .MuiOutlinedInput-notchedOutline': {
                 borderColor: mode === 'light'
-                  ? 'rgba(30, 64, 175, 0.4)'
+                  ? 'rgba(15, 23, 42, 0.3)'
                   : 'rgba(96, 165, 250, 0.4)',
                 borderWidth: 2,
               },
             },
             '&.Mui-focused': {
-              transform: 'translateY(-2px)',
+              transform: 'translateY(-3px) scale(1.02)',
+              animation: 'pulse 0.5s ease-in-out',
               boxShadow: mode === 'light'
-                ? '0px 8px 24px rgba(30, 64, 175, 0.15)'
+                ? '0px 8px 30px rgba(0, 0, 0, 0.12)'
                 : '0px 8px 24px rgba(96, 165, 250, 0.15)',
               '& .MuiOutlinedInput-notchedOutline': {
                 borderWidth: 2,
-                borderColor: mode === 'light' ? '#667eea' : '#64b5f6',
+                borderColor: mode === 'light' ? '#0f172a' : '#64b5f6',
               },
             },
+          },
+          '& .MuiInputLabel-root': {
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&.Mui-focused': {
+              fontWeight: 600,
+              transform: 'scale(1.05)',
+            },
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            transform: 'scale(1.01)',
+          },
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            transform: 'translateX(5px)',
+            backgroundColor: mode === 'light'
+              ? 'rgba(15, 23, 42, 0.06)'
+              : 'rgba(96, 165, 250, 0.08)',
+          },
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          '& .MuiListItem-root': {
+            transition: 'all 0.2s ease',
+            '&:hover': {
+              transform: 'translateX(4px)',
+            },
+          },
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+          '&:hover': {
+            transform: 'translateX(8px) scale(1.02)',
+            backgroundColor: mode === 'light'
+              ? 'rgba(15, 23, 42, 0.06)'
+              : 'rgba(96, 165, 250, 0.08)',
+          },
+          '&.Mui-selected': {
+            animation: 'pulse 0.5s ease-in-out',
+            '&:hover': {
+              transform: 'translateX(10px) scale(1.02)',
+            },
+          },
+        },
+      },
+    },
+    MuiSwitch: {
+      styleOverrides: {
+        root: {
+          '& .MuiSwitch-thumb': {
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          },
+          '&:hover .MuiSwitch-thumb': {
+            transform: 'scale(1.2)',
+          },
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            transform: 'scale(1.15) rotate(5deg)',
+          },
+        },
+      },
+    },
+    MuiFab: {
+      styleOverrides: {
+        root: {
+          animation: 'float 3s ease-in-out infinite',
+          '&:hover': {
+            animation: 'none',
+            transform: 'scale(1.1) rotate(5deg)',
           },
         },
       },
