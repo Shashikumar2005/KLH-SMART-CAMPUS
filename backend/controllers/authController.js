@@ -16,8 +16,10 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Validate student email format (must be 10 digits followed by @klh.edu.in)
+    // Get email prefix once
     const emailPrefix = email.split('@')[0];
+
+    // Validate student email format (must be 10 digits followed by @klh.edu.in)
     if (role === 'student' && !/^\d{10}$/.test(emailPrefix)) {
       return res.status(400).json({
         success: false,
@@ -47,7 +49,6 @@ exports.register = async (req, res) => {
 
     // Restrict faculty registration - only pre-registered staff can exist
     // Students can register freely, but faculty must be created by admin
-    const emailPrefix = email.split('@')[0];
     const isFacultyEmail = /^[a-zA-Z]+\d{4}$/.test(emailPrefix) && email.endsWith('@klh.edu.in');
     
     if (isFacultyEmail) {
@@ -62,8 +63,6 @@ exports.register = async (req, res) => {
     let autoDetectedStudentId = null;
 
     if (email.endsWith('@klh.edu.in')) {
-      const emailPrefix = email.split('@')[0];
-      
       // Check if email is 10 digits (student)
       if (/^\d{10}$/.test(emailPrefix)) {
         userRole = 'student';
@@ -243,6 +242,65 @@ exports.updateProfile = async (req, res) => {
     res.status(200).json({
       success: true,
       data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// @desc    Change password
+// @route   PUT /api/auth/change-password
+// @access  Private
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // Validate inputs
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide current password and new password',
+      });
+    }
+
+    // Get user with password
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Check if current password matches
+    const isMatch = await user.matchPassword(currentPassword);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current password is incorrect',
+      });
+    }
+
+    // Validate new password length
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 6 characters long',
+      });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password changed successfully',
     });
   } catch (error) {
     res.status(500).json({
