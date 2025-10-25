@@ -25,33 +25,41 @@ exports.register = async (req, res) => {
       });
     }
 
-    // Auto-detect role based on email pattern (only if not admin)
-    let userRole = role;
-    if (role !== 'admin' && email.endsWith('@klh.edu.in')) {
+    // Auto-detect role based on email pattern if not explicitly provided
+    let userRole = role || 'student'; // Default to student
+    let autoDetectedStudentId = null;
+
+    if (email.endsWith('@klh.edu.in')) {
       const emailPrefix = email.split('@')[0];
-      // Check if email starts with numbers (student) or letters (faculty)
+      
+      // Check if email starts with numbers (student)
       if (/^\d/.test(emailPrefix)) {
         userRole = 'student';
-        // For students, extract student ID from email if not provided
+        // Auto-extract student ID from email if not provided
         if (!studentId && /^\d+$/.test(emailPrefix)) {
-          req.body.studentId = emailPrefix;
+          autoDetectedStudentId = emailPrefix;
         }
-      } else if (/^[a-zA-Z]/.test(emailPrefix)) {
+      } 
+      // Check if email starts with letters (faculty)
+      else if (/^[a-zA-Z]/.test(emailPrefix)) {
         userRole = 'faculty';
       }
     }
 
+    // Use provided studentId or auto-detected one
+    const finalStudentId = studentId || autoDetectedStudentId;
+
     // Validate student ID for students
-    if (userRole === 'student' && !studentId && !req.body.studentId) {
+    if (userRole === 'student' && !finalStudentId) {
       return res.status(400).json({
         success: false,
         message: 'Student ID is required for student accounts',
       });
     }
 
-    // Check if studentId already exists (for students)
-    if (studentId || req.body.studentId) {
-      const studentExists = await User.findOne({ studentId: studentId || req.body.studentId });
+    // Check if studentId already exists (for students only)
+    if (finalStudentId) {
+      const studentExists = await User.findOne({ studentId: finalStudentId });
       if (studentExists) {
         return res.status(400).json({
           success: false,
@@ -61,15 +69,21 @@ exports.register = async (req, res) => {
     }
 
     // Create user
-    const user = await User.create({
+    const userData = {
       name,
       email,
       password,
       role: userRole,
-      studentId: studentId || req.body.studentId,
       department,
       phone,
-    });
+    };
+
+    // Only add studentId for students
+    if (userRole === 'student' && finalStudentId) {
+      userData.studentId = finalStudentId;
+    }
+
+    const user = await User.create(userData);
 
     // Generate token
     const token = user.getSignedJwtToken();

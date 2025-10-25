@@ -66,9 +66,13 @@ const Register = () => {
         // Email starts with letter - Faculty
         setDetectedRole('faculty');
         setValue('role', 'faculty');
+        // Clear studentId for faculty
+        setValue('studentId', '');
       }
     } else {
       setDetectedRole(null);
+      // Reset to default
+      setValue('role', 'student');
     }
   }, [emailValue, setValue]);
 
@@ -234,17 +238,15 @@ const Register = () => {
                   label="Role"
                   {...register('role')}
                   error={!!errors.role}
-                  helperText={detectedRole ? '✓ Auto-detected from email' : errors.role?.message}
+                  helperText={errors.role?.message}
                   defaultValue="student"
-                  disabled={!!detectedRole}
                   InputProps={{
-                    endAdornment: detectedRole && (
-                      <InputAdornment position="end">
+                    startAdornment: detectedRole && (
+                      <InputAdornment position="start">
                         <Chip 
                           label="Auto-detected" 
                           color="success" 
-                          size="small" 
-                          sx={{ mr: 3 }}
+                          size="small"
                         />
                       </InputAdornment>
                     ),
