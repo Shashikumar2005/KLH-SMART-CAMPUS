@@ -21,12 +21,12 @@ export const getTheme = (mode) => createTheme({
     // Background with subtle patterns
     background: {
       default: mode === 'light' ? '#f8fafc' : '#0f172a',
-      paper: mode === 'light' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(30, 41, 59, 0.9)',
-      glass: mode === 'light' ? 'rgba(255, 255, 255, 0.75)' : 'rgba(30, 41, 59, 0.75)',
+      paper: mode === 'light' ? '#ffffff' : '#1e293b',
+      glass: mode === 'light' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(30, 41, 59, 0.95)',
     },
     text: {
       primary: mode === 'light' ? '#0f172a' : '#f1f5f9',
-      secondary: mode === 'light' ? '#475569' : '#cbd5e1',
+      secondary: mode === 'light' ? '#334155' : '#cbd5e1',
     },
     divider: mode === 'light' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)',
     // Section-specific colors
@@ -231,13 +231,34 @@ export const getTheme = (mode) => createTheme({
       styleOverrides: {
         body: {
           background: mode === 'light'
-            ? `linear-gradient(135deg, #667eea 0%, #764ba2 100%),
-               repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.03) 10px, rgba(255,255,255,.03) 20px)`
-            : `linear-gradient(135deg, #0f172a 0%, #1e293b 100%),
-               repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 20px)`,
+            ? 'linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%)'
+            : 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
           backgroundAttachment: 'fixed',
-          backgroundBlendMode: 'overlay',
           minHeight: '100vh',
+          scrollBehavior: 'smooth',
+        },
+        '*': {
+          scrollBehavior: 'smooth',
+        },
+        '*::-webkit-scrollbar': {
+          width: '10px',
+          height: '10px',
+        },
+        '*::-webkit-scrollbar-track': {
+          background: mode === 'light' ? '#f1f5f9' : '#1e293b',
+          borderRadius: '10px',
+        },
+        '*::-webkit-scrollbar-thumb': {
+          background: mode === 'light'
+            ? 'linear-gradient(180deg, #3b82f6, #1e40af)'
+            : 'linear-gradient(180deg, #60a5fa, #3b82f6)',
+          borderRadius: '10px',
+          border: mode === 'light' ? '2px solid #f1f5f9' : '2px solid #1e293b',
+          '&:hover': {
+            background: mode === 'light'
+              ? 'linear-gradient(180deg, #2563eb, #1e3a8a)'
+              : 'linear-gradient(180deg, #93c5fd, #60a5fa)',
+          },
         },
       },
     },
@@ -250,6 +271,24 @@ export const getTheme = (mode) => createTheme({
           fontSize: '0.9375rem',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           textTransform: 'none',
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '0',
+            height: '0',
+            borderRadius: '50%',
+            background: 'rgba(255, 255, 255, 0.3)',
+            transform: 'translate(-50%, -50%)',
+            transition: 'width 0.6s, height 0.6s',
+          },
+          '&:active::before': {
+            width: '300px',
+            height: '300px',
+          },
           '&:active': {
             transform: 'scale(0.97)',
           },
@@ -272,6 +311,7 @@ export const getTheme = (mode) => createTheme({
             backgroundColor: mode === 'light'
               ? 'rgba(30, 64, 175, 0.04)'
               : 'rgba(96, 165, 250, 0.08)',
+            transform: 'translateY(-1px)',
           },
         },
         text: {
@@ -288,30 +328,96 @@ export const getTheme = (mode) => createTheme({
         root: {
           borderRadius: 16,
           background: mode === 'light'
-            ? 'rgba(255, 255, 255, 0.85)'
-            : 'rgba(30, 41, 59, 0.85)',
+            ? '#ffffff'
+            : '#1e293b',
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           border: mode === 'light'
-            ? '1px solid rgba(255, 255, 255, 0.5)'
-            : '1px solid rgba(255, 255, 255, 0.08)',
+            ? '1px solid rgba(59, 130, 246, 0.1)'
+            : '1px solid rgba(148, 163, 184, 0.1)',
           boxShadow: mode === 'light'
-            ? '0px 4px 24px rgba(30, 64, 175, 0.08)'
-            : '0px 4px 24px rgba(0, 0, 0, 0.4)',
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            ? '0px 4px 20px rgba(0, 0, 0, 0.08)'
+            : '0px 4px 20px rgba(0, 0, 0, 0.5)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           cursor: 'pointer',
+          position: 'relative',
+          overflow: 'hidden',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: '-100%',
+            width: '100%',
+            height: '100%',
+            background: mode === 'light'
+              ? 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent)'
+              : 'linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.1), transparent)',
+            transition: 'left 0.5s ease',
+          },
           '&:hover': {
-            transform: 'translateY(-6px) scale(1.01)',
+            transform: 'translateY(-8px) scale(1.02)',
             boxShadow: mode === 'light'
-              ? '0px 12px 40px rgba(30, 64, 175, 0.15)'
-              : '0px 12px 40px rgba(0, 0, 0, 0.6)',
+              ? '0px 12px 40px rgba(59, 130, 246, 0.2)'
+              : '0px 12px 40px rgba(96, 165, 250, 0.3)',
             borderColor: mode === 'light'
-              ? 'rgba(30, 64, 175, 0.3)'
+              ? 'rgba(59, 130, 246, 0.3)'
               : 'rgba(96, 165, 250, 0.3)',
+            '&::after': {
+              left: '100%',
+            },
           },
           '&:active': {
-            transform: 'translateY(-4px) scale(0.99)',
+            transform: 'translateY(-6px) scale(1.01)',
           },
+          animation: 'fadeInUp 0.5s ease-out',
+          '@keyframes fadeInUp': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateY(20px)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateY(0)',
+            },
+          },
+          '@keyframes slideInRight': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateX(100px)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateX(0)',
+            },
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+          background: mode === 'light'
+            ? '#ffffff'
+            : '#1e293b',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          animation: 'slideIn 0.3s ease-out',
+          '@keyframes slideIn': {
+            '0%': {
+              opacity: 0,
+              transform: 'scale(0.95)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'scale(1)',
+            },
+          },
+        },
+        elevation1: {
+          boxShadow: mode === 'light'
+            ? '0px 2px 12px rgba(0, 0, 0, 0.08)'
+            : '0px 2px 12px rgba(0, 0, 0, 0.5)',
         },
       },
     },
@@ -337,24 +443,32 @@ export const getTheme = (mode) => createTheme({
         root: {
           '& .MuiOutlinedInput-root': {
             borderRadius: 12,
-            background: mode === 'light'
-              ? 'rgba(255, 255, 255, 0.6)'
-              : 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease',
+            backgroundColor: mode === 'light' ? '#ffffff' : '#1e293b',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: mode === 'light'
+                ? 'rgba(30, 64, 175, 0.2)'
+                : 'rgba(96, 165, 250, 0.2)',
+              borderWidth: 2,
+              transition: 'all 0.3s ease',
+            },
             '&:hover': {
-              background: mode === 'light'
-                ? 'rgba(255, 255, 255, 0.8)'
-                : 'rgba(255, 255, 255, 0.08)',
+              transform: 'translateY(-1px)',
+              boxShadow: mode === 'light'
+                ? '0px 4px 12px rgba(30, 64, 175, 0.1)'
+                : '0px 4px 12px rgba(96, 165, 250, 0.1)',
               '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: mode === 'light' ? '#667eea' : '#64b5f6',
+                borderColor: mode === 'light'
+                  ? 'rgba(30, 64, 175, 0.4)'
+                  : 'rgba(96, 165, 250, 0.4)',
                 borderWidth: 2,
               },
             },
             '&.Mui-focused': {
-              background: mode === 'light'
-                ? 'rgba(255, 255, 255, 0.9)'
-                : 'rgba(255, 255, 255, 0.1)',
+              transform: 'translateY(-2px)',
+              boxShadow: mode === 'light'
+                ? '0px 8px 24px rgba(30, 64, 175, 0.15)'
+                : '0px 8px 24px rgba(96, 165, 250, 0.15)',
               '& .MuiOutlinedInput-notchedOutline': {
                 borderWidth: 2,
                 borderColor: mode === 'light' ? '#667eea' : '#64b5f6',
@@ -458,16 +572,27 @@ export const getTheme = (mode) => createTheme({
       styleOverrides: {
         root: {
           background: mode === 'light'
-            ? 'rgba(255, 255, 255, 0.8)'
-            : 'rgba(30, 30, 46, 0.8)',
+            ? '#ffffff'
+            : '#1e293b',
           backdropFilter: 'blur(20px) saturate(180%)',
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           boxShadow: mode === 'light'
-            ? '0px 4px 20px rgba(99, 102, 241, 0.1)'
-            : '0px 4px 20px rgba(0, 0, 0, 0.5)',
+            ? '0px 2px 12px rgba(0, 0, 0, 0.08)'
+            : '0px 2px 12px rgba(0, 0, 0, 0.5)',
           borderBottom: mode === 'light'
-            ? '1px solid rgba(255, 255, 255, 0.3)'
-            : '1px solid rgba(255, 255, 255, 0.1)',
+            ? '1px solid rgba(59, 130, 246, 0.1)'
+            : '1px solid rgba(148, 163, 184, 0.1)',
+          animation: 'slideDown 0.4s ease-out',
+          '@keyframes slideDown': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateY(-100%)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateY(0)',
+            },
+          },
         },
       },
     },
@@ -475,13 +600,27 @@ export const getTheme = (mode) => createTheme({
       styleOverrides: {
         paper: {
           background: mode === 'light'
-            ? 'rgba(255, 255, 255, 0.9)'
-            : 'rgba(30, 30, 46, 0.95)',
+            ? '#ffffff'
+            : '#1e293b',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           borderRight: mode === 'light'
-            ? '1px solid rgba(255, 255, 255, 0.3)'
-            : '1px solid rgba(255, 255, 255, 0.1)',
+            ? '1px solid rgba(59, 130, 246, 0.1)'
+            : '1px solid rgba(148, 163, 184, 0.1)',
+          boxShadow: mode === 'light'
+            ? '2px 0 12px rgba(0, 0, 0, 0.08)'
+            : '2px 0 12px rgba(0, 0, 0, 0.5)',
+          animation: 'slideInLeft 0.3s ease-out',
+          '@keyframes slideInLeft': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateX(-100%)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateX(0)',
+            },
+          },
         },
       },
     },
@@ -556,12 +695,54 @@ export const getTheme = (mode) => createTheme({
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 16,
+          borderRadius: 20,
           background: mode === 'light'
-            ? 'rgba(255, 255, 255, 0.95)'
-            : 'rgba(30, 41, 59, 0.95)',
+            ? '#ffffff'
+            : '#1e293b',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
+          border: mode === 'light'
+            ? '1px solid rgba(59, 130, 246, 0.1)'
+            : '1px solid rgba(148, 163, 184, 0.1)',
+          boxShadow: mode === 'light'
+            ? '0px 20px 60px rgba(0, 0, 0, 0.15)'
+            : '0px 20px 60px rgba(0, 0, 0, 0.6)',
+          animation: 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+          '@keyframes popIn': {
+            '0%': {
+              opacity: 0,
+              transform: 'scale(0.8) translateY(-20px)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'scale(1) translateY(0)',
+            },
+          },
+        },
+        backdrop: {
+          backdropFilter: 'blur(8px)',
+          backgroundColor: mode === 'light'
+            ? 'rgba(15, 23, 42, 0.4)'
+            : 'rgba(0, 0, 0, 0.7)',
+        },
+      },
+    },
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          backdropFilter: 'blur(8px)',
+          backgroundColor: mode === 'light'
+            ? 'rgba(15, 23, 42, 0.4)'
+            : 'rgba(0, 0, 0, 0.7)',
+          animation: 'fadeIn 0.3s ease-out',
+          '@keyframes fadeIn': {
+            '0%': {
+              opacity: 0,
+            },
+            '100%': {
+              opacity: 1,
+            },
+          },
         },
       },
     },
@@ -584,6 +765,10 @@ export const getTheme = (mode) => createTheme({
         root: {
           borderRadius: 12,
           backdropFilter: 'blur(10px)',
+          animation: 'slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: mode === 'light'
+            ? '0px 4px 12px rgba(0, 0, 0, 0.1)'
+            : '0px 4px 12px rgba(0, 0, 0, 0.5)',
         },
       },
     },
@@ -596,6 +781,39 @@ export const getTheme = (mode) => createTheme({
           boxShadow: mode === 'light'
             ? '0px 4px 12px rgba(30, 64, 175, 0.2)'
             : '0px 4px 12px rgba(0, 0, 0, 0.4)',
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            backgroundColor: mode === 'light'
+              ? 'rgba(30, 64, 175, 0.04)'
+              : 'rgba(96, 165, 250, 0.08)',
+            transform: 'scale(1.005)',
+          },
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          transition: 'all 0.2s ease',
+          '&:hover': {
+            transform: 'scale(1.05)',
+            boxShadow: mode === 'light'
+              ? '0px 4px 12px rgba(30, 64, 175, 0.2)'
+              : '0px 4px 12px rgba(96, 165, 250, 0.2)',
+          },
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          animation: 'popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
         },
       },
     },
