@@ -171,45 +171,129 @@ const Clubs = () => {
       <Grid container spacing={3}>
         {filteredClubs.map((club) => (
           <Grid item xs={12} sm={6} md={4} key={club._id}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Card 
+              sx={{ 
+                height: '100%', 
+                display: 'flex', 
+                flexDirection: 'column',
+                borderRadius: 3,
+                overflow: 'hidden',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                border: '1px solid',
+                borderColor: (theme) => 
+                  theme.palette.mode === 'light'
+                    ? 'rgba(0, 0, 0, 0.05)'
+                    : 'rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-12px) scale(1.02)',
+                  boxShadow: '0 16px 40px rgba(102, 126, 234, 0.25)',
+                  borderColor: (theme) => theme.palette.primary.main,
+                  '& .club-cover': {
+                    transform: 'scale(1.15)',
+                  },
+                  '& .club-avatar': {
+                    transform: 'scale(1.1) rotate(5deg)',
+                  },
+                },
+              }}
+            >
               {club.coverImage && (
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={club.coverImage}
-                  alt={club.name}
-                />
+                <Box sx={{ overflow: 'hidden', height: 140, position: 'relative' }}>
+                  <CardMedia
+                    className="club-cover"
+                    component="img"
+                    height="140"
+                    image={club.coverImage}
+                    alt={club.name}
+                    sx={{
+                      transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%)',
+                    }}
+                  />
+                </Box>
               )}
-              <CardContent sx={{ flexGrow: 1 }}>
+              <CardContent sx={{ flexGrow: 1, p: 2.5 }}>
                 <Box display="flex" alignItems="center" mb={2}>
                   {club.logo ? (
-                    <Avatar src={club.logo} sx={{ width: 56, height: 56, mr: 2 }} />
+                    <Avatar 
+                      src={club.logo} 
+                      className="club-avatar"
+                      sx={{ 
+                        width: 56, 
+                        height: 56, 
+                        mr: 2,
+                        border: '3px solid',
+                        borderColor: 'background.paper',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }} 
+                    />
                   ) : (
-                    <Avatar sx={{ width: 56, height: 56, mr: 2, bgcolor: 'primary.main' }}>
+                    <Avatar 
+                      className="club-avatar"
+                      sx={{ 
+                        width: 56, 
+                        height: 56, 
+                        mr: 2, 
+                        bgcolor: 'primary.main',
+                        border: '3px solid',
+                        borderColor: 'background.paper',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                    >
                       {club.name.charAt(0)}
                     </Avatar>
                   )}
                   <Box>
-                    <Typography variant="h6">{club.name}</Typography>
+                    <Typography variant="h6" fontWeight="bold">{club.name}</Typography>
                     <Chip
                       label={club.category}
                       size="small"
                       color="primary"
                       variant="outlined"
+                      sx={{
+                        borderRadius: 1.5,
+                        fontWeight: 600,
+                      }}
                     />
                   </Box>
                 </Box>
-                <Typography variant="body2" color="text.secondary" mb={2}>
-                  {club.description.substring(0, 100)}...
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary" 
+                  mb={2}
+                  sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {club.description}
                 </Typography>
                 <Box display="flex" alignItems="center" gap={2}>
                   <Box display="flex" alignItems="center">
-                    <PeopleIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    <Typography variant="body2">{club.members?.length || 0} members</Typography>
+                    <PeopleIcon fontSize="small" sx={{ mr: 0.5, color: 'primary.main' }} />
+                    <Typography variant="body2" fontWeight={500}>
+                      {club.members?.length || 0} members
+                    </Typography>
                   </Box>
                   <Box display="flex" alignItems="center">
-                    <EventIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    <Typography variant="body2">{club.events?.length || 0} events</Typography>
+                    <EventIcon fontSize="small" sx={{ mr: 0.5, color: 'secondary.main' }} />
+                    <Typography variant="body2" fontWeight={500}>
+                      {club.events?.length || 0} events
+                    </Typography>
                   </Box>
                 </Box>
               </CardContent>
@@ -218,6 +302,19 @@ const Clubs = () => {
                   fullWidth
                   variant="outlined"
                   onClick={() => handleViewDetails(club._id)}
+                  sx={{
+                    borderRadius: 2,
+                    py: 1,
+                    fontWeight: 600,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+                      bgcolor: 'primary.main',
+                      color: 'white',
+                      borderColor: 'primary.main',
+                    },
+                  }}
                 >
                   View Details
                 </Button>

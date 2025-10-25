@@ -199,27 +199,81 @@ const Events = () => {
         <Grid container spacing={3}>
           {events.map((event) => (
             <Grid item xs={12} sm={6} md={4} key={event._id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Card 
+                sx={{ 
+                  height: '100%', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                  border: '1px solid',
+                  borderColor: (theme) => 
+                    theme.palette.mode === 'light'
+                      ? 'rgba(0, 0, 0, 0.05)'
+                      : 'rgba(255, 255, 255, 0.05)',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    transform: 'translateY(-12px)',
+                    boxShadow: '0 16px 40px rgba(102, 126, 234, 0.25)',
+                    borderColor: (theme) => theme.palette.primary.main,
+                    '& .event-image': {
+                      transform: 'scale(1.1) rotate(2deg)',
+                    },
+                    '& .event-category': {
+                      transform: 'translateX(-4px)',
+                    },
+                  },
+                }}
+              >
                 {event.imageUrl && (
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    image={event.imageUrl}
-                    alt={event.title}
-                  />
+                  <Box sx={{ overflow: 'hidden', height: 180, position: 'relative' }}>
+                    <CardMedia
+                      className="event-image"
+                      component="img"
+                      height="180"
+                      image={event.imageUrl}
+                      alt={event.title}
+                      sx={{
+                        transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%)',
+                      }}
+                    />
+                  </Box>
                 )}
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Box display="flex" justifyContent="space-between" mb={1}>
+                <CardContent sx={{ flexGrow: 1, p: 2.5 }}>
+                  <Box display="flex" justifyContent="space-between" mb={1.5}>
                     <Chip
+                      className="event-category"
                       label={event.category}
                       size="small"
                       color={getCategoryColor(event.category)}
+                      sx={{
+                        fontWeight: 600,
+                        transition: 'transform 0.3s ease',
+                      }}
                     />
                     {canManageEvents && event.createdBy?._id === user?.id && (
                       <Box>
                         <IconButton
                           size="small"
                           onClick={() => handleOpenDialog(event)}
+                          sx={{
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'scale(1.2) rotate(10deg)',
+                              bgcolor: 'action.hover',
+                            },
+                          }}
                         >
                           <Edit fontSize="small" />
                         </IconButton>
@@ -227,6 +281,13 @@ const Events = () => {
                           size="small"
                           color="error"
                           onClick={() => handleDelete(event._id)}
+                          sx={{
+                            transition: 'all 0.3s ease',
+                            '&:hover': {
+                              transform: 'scale(1.2)',
+                              bgcolor: 'error.lighter',
+                            },
+                          }}
                         >
                           <Delete fontSize="small" />
                         </IconButton>
@@ -314,6 +375,21 @@ const Events = () => {
                         (event.maxParticipants &&
                           event.registeredUsers?.length >= event.maxParticipants)
                       }
+                      sx={{
+                        borderRadius: 2,
+                        py: 1,
+                        fontWeight: 600,
+                        boxShadow: event.registeredUsers?.some(u => u._id === user?.id) 
+                          ? 'none' 
+                          : '0 4px 12px rgba(25, 118, 210, 0.3)',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'translateY(-2px)',
+                          boxShadow: event.registeredUsers?.some(u => u._id === user?.id)
+                            ? '0 4px 12px rgba(46, 125, 50, 0.2)'
+                            : '0 6px 20px rgba(25, 118, 210, 0.4)',
+                        },
+                      }}
                     >
                       {event.registeredUsers?.some(u => u._id === user?.id)
                         ? '✓ Registered'
@@ -326,6 +402,15 @@ const Events = () => {
                   <Button
                     fullWidth={!event.registrationRequired}
                     onClick={() => navigate(`/events/${event._id}`)}
+                    sx={{
+                      borderRadius: 2,
+                      fontWeight: 600,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        bgcolor: 'action.hover',
+                      },
+                    }}
                   >
                     View Details
                   </Button>
@@ -337,7 +422,18 @@ const Events = () => {
       )}
 
       {/* Create/Edit Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+          },
+        }}
+      >
         <DialogTitle>
           {editMode ? 'Edit Event' : 'Create New Event'}
         </DialogTitle>

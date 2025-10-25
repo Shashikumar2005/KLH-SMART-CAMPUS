@@ -106,26 +106,59 @@ const StudentDashboard = () => {
               sx={{
                 cursor: 'pointer',
                 height: '100%',
+                borderRadius: 3,
+                background: (theme) => 
+                  theme.palette.mode === 'light'
+                    ? 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)'
+                    : 'linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%)',
+                border: '1px solid',
+                borderColor: (theme) => 
+                  theme.palette.mode === 'light'
+                    ? 'rgba(102, 126, 234, 0.1)'
+                    : 'rgba(102, 126, 234, 0.2)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-8px) scale(1.02)',
+                  boxShadow: '0 12px 32px rgba(102, 126, 234, 0.25)',
+                  borderColor: stat.color,
+                  '& .stat-icon': {
+                    transform: 'rotate(10deg) scale(1.1)',
+                    background: `${stat.color}40`,
+                  },
+                },
               }}
               onClick={stat.action}
             >
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   <Box
+                    className="stat-icon"
                     sx={{
-                      p: 1,
+                      p: 1.5,
                       borderRadius: 2,
                       bgcolor: `${stat.color}20`,
                       color: stat.color,
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                     }}
                   >
                     {stat.icon}
                   </Box>
                 </Box>
-                <Typography variant="h4" fontWeight="bold">
+                <Typography 
+                  variant="h4" 
+                  fontWeight="bold"
+                  sx={{
+                    background: `linear-gradient(135deg, ${stat.color} 0%, ${stat.color}99 100%)`,
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    mb: 0.5,
+                  }}
+                >
                   {stat.value}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" fontWeight={500}>
                   {stat.title}
                 </Typography>
               </CardContent>
@@ -138,12 +171,38 @@ const StudentDashboard = () => {
       <Grid container spacing={3} sx={{ mt: 3 }}>
         {/* Upcoming Events */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
+          <Paper 
+            sx={{ 
+              p: 3,
+              borderRadius: 3,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+              transition: 'all 0.3s ease',
+              border: '1px solid',
+              borderColor: (theme) => 
+                theme.palette.mode === 'light'
+                  ? 'rgba(0, 0, 0, 0.05)'
+                  : 'rgba(255, 255, 255, 0.05)',
+              '&:hover': {
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                transform: 'translateY(-4px)',
+              },
+            }}
+          >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
               <Typography variant="h6" fontWeight="bold">
                 Upcoming Events
               </Typography>
-              <Button size="small" onClick={() => navigate('/events')}>
+              <Button 
+                size="small" 
+                onClick={() => navigate('/events')}
+                sx={{
+                  borderRadius: 2,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  },
+                }}
+              >
                 View All
               </Button>
             </Box>
@@ -153,8 +212,14 @@ const StudentDashboard = () => {
                   key={event._id}
                   sx={{
                     cursor: 'pointer',
-                    '&:hover': { bgcolor: 'action.hover' },
-                    borderRadius: 1,
+                    borderRadius: 2,
+                    mb: 1,
+                    transition: 'all 0.3s ease',
+                    '&:hover': { 
+                      bgcolor: 'action.hover',
+                      transform: 'translateX(8px)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    },
                   }}
                   onClick={() => navigate(`/events/${event._id}`)}
                 >
@@ -166,7 +231,13 @@ const StudentDashboard = () => {
                   <Chip
                     label={event.category}
                     size="small"
-                    sx={{ ml: 1 }}
+                    sx={{ 
+                      ml: 1,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.1)',
+                      },
+                    }}
                   />
                 </ListItem>
               ))}
@@ -181,12 +252,38 @@ const StudentDashboard = () => {
 
         {/* Recent Announcements */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
+          <Paper 
+            sx={{ 
+              p: 3,
+              borderRadius: 3,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+              transition: 'all 0.3s ease',
+              border: '1px solid',
+              borderColor: (theme) => 
+                theme.palette.mode === 'light'
+                  ? 'rgba(0, 0, 0, 0.05)'
+                  : 'rgba(255, 255, 255, 0.05)',
+              '&:hover': {
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+                transform: 'translateY(-4px)',
+              },
+            }}
+          >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
               <Typography variant="h6" fontWeight="bold">
                 Recent Announcements
               </Typography>
-              <Button size="small" onClick={() => navigate('/announcements')}>
+              <Button 
+                size="small" 
+                onClick={() => navigate('/announcements')}
+                sx={{
+                  borderRadius: 2,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                  },
+                }}
+              >
                 View All
               </Button>
             </Box>
@@ -196,9 +293,15 @@ const StudentDashboard = () => {
                   key={announcement._id}
                   sx={{
                     cursor: 'pointer',
-                    '&:hover': { bgcolor: 'action.hover' },
-                    borderRadius: 1,
+                    borderRadius: 2,
                     alignItems: 'flex-start',
+                    mb: 1,
+                    transition: 'all 0.3s ease',
+                    '&:hover': { 
+                      bgcolor: 'action.hover',
+                      transform: 'translateX(8px)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    },
                   }}
                 >
                   <ListItemText
@@ -216,6 +319,12 @@ const StudentDashboard = () => {
                     label={announcement.category}
                     size="small"
                     color={announcement.priority === 'high' ? 'error' : 'default'}
+                    sx={{
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.1)',
+                      },
+                    }}
                   />
                 </ListItem>
               ))}
@@ -230,7 +339,24 @@ const StudentDashboard = () => {
       </Grid>
 
       {/* Quick Actions */}
-      <Paper sx={{ p: 3, mt: 3 }}>
+      <Paper 
+        sx={{ 
+          p: 3, 
+          mt: 3,
+          borderRadius: 3,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+          transition: 'all 0.3s ease',
+          border: '1px solid',
+          borderColor: (theme) => 
+            theme.palette.mode === 'light'
+              ? 'rgba(0, 0, 0, 0.05)'
+              : 'rgba(255, 255, 255, 0.05)',
+          '&:hover': {
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+            transform: 'translateY(-4px)',
+          },
+        }}
+      >
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           Quick Actions
         </Typography>
@@ -239,6 +365,15 @@ const StudentDashboard = () => {
             variant="contained"
             startIcon={<EventIcon />}
             onClick={() => navigate('/events')}
+            sx={{
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px) scale(1.05)',
+                boxShadow: '0 6px 20px rgba(25, 118, 210, 0.4)',
+              },
+            }}
           >
             Browse Events
           </Button>
@@ -246,6 +381,15 @@ const StudentDashboard = () => {
             variant="contained"
             startIcon={<LostFoundIcon />}
             onClick={() => navigate('/lost-found')}
+            sx={{
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px) scale(1.05)',
+                boxShadow: '0 6px 20px rgba(25, 118, 210, 0.4)',
+              },
+            }}
           >
             Report Lost Item
           </Button>
@@ -253,6 +397,15 @@ const StudentDashboard = () => {
             variant="contained"
             startIcon={<FeedbackIcon />}
             onClick={() => navigate('/feedback')}
+            sx={{
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px) scale(1.05)',
+                boxShadow: '0 6px 20px rgba(25, 118, 210, 0.4)',
+              },
+            }}
           >
             Submit Feedback
           </Button>

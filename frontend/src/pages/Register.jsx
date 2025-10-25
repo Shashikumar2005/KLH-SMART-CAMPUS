@@ -97,16 +97,75 @@ const Register = () => {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: (theme) => 
+          theme.palette.mode === 'light'
+            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            : 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)',
         py: 4,
+        position: 'relative',
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          bottom: '-50%',
+          left: '-50%',
+          width: '100%',
+          height: '100%',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+          animation: 'pulse 4s ease-in-out infinite',
+        },
+        '@keyframes pulse': {
+          '0%, 100%': { transform: 'scale(1)', opacity: 1 },
+          '50%': { transform: 'scale(1.1)', opacity: 0.8 },
+        },
       }}
     >
       <Container maxWidth="md">
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" align="center" gutterBottom fontWeight="bold">
+        <Paper 
+          elevation={24} 
+          sx={{ 
+            p: 4,
+            borderRadius: 4,
+            background: (theme) => 
+              theme.palette.mode === 'light'
+                ? 'rgba(255, 255, 255, 0.95)'
+                : 'rgba(30, 30, 30, 0.95)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid',
+            borderColor: (theme) => 
+              theme.palette.mode === 'light'
+                ? 'rgba(255, 255, 255, 0.3)'
+                : 'rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 12px 48px rgba(0, 0, 0, 0.2)',
+            },
+          }}
+        >
+          <Typography 
+            variant="h4" 
+            align="center" 
+            gutterBottom 
+            fontWeight="bold"
+            sx={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Smart Campus KLH
           </Typography>
-          <Typography variant="h6" align="center" gutterBottom color="text.secondary">
+          <Typography 
+            variant="h6" 
+            align="center" 
+            gutterBottom 
+            color="text.secondary"
+            fontWeight={500}
+            sx={{ mb: 3 }}
+          >
             Create Your Account
           </Typography>
 
@@ -125,6 +184,18 @@ const Register = () => {
                   {...register('name')}
                   error={!!errors.name}
                   helperText={errors.name?.message}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                      },
+                      '&.Mui-focused': {
+                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                      },
+                    },
+                  }}
                 />
               </Grid>
 
@@ -137,6 +208,18 @@ const Register = () => {
                   error={!!errors.email}
                   helperText={errors.email?.message || 'Use your @klh.edu.in email'}
                   placeholder="2310080030@klh.edu.in or yourname@klh.edu.in"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                      },
+                      '&.Mui-focused': {
+                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                      },
+                    },
+                  }}
                 />
               </Grid>
 
@@ -148,12 +231,28 @@ const Register = () => {
                   {...register('password')}
                   error={!!errors.password}
                   helperText={errors.password?.message}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                      },
+                      '&.Mui-focused': {
+                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                      },
+                    },
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
                           onClick={() => setShowPassword(!showPassword)}
                           edge="end"
+                          sx={{
+                            transition: 'transform 0.2s ease',
+                            '&:hover': { transform: 'scale(1.1)' },
+                          }}
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
@@ -171,12 +270,28 @@ const Register = () => {
                   {...register('confirmPassword')}
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword?.message}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                      },
+                      '&.Mui-focused': {
+                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                      },
+                    },
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           edge="end"
+                          sx={{
+                            transition: 'transform 0.2s ease',
+                            '&:hover': { transform: 'scale(1.1)' },
+                          }}
                         >
                           {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
@@ -195,6 +310,18 @@ const Register = () => {
                   error={!!errors.role}
                   helperText={errors.role?.message}
                   defaultValue="student"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                      },
+                      '&.Mui-focused': {
+                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                      },
+                    },
+                  }}
                 >
                   <MenuItem value="student">Student</MenuItem>
                   <MenuItem value="faculty">Faculty</MenuItem>
@@ -210,6 +337,18 @@ const Register = () => {
                     error={!!errors.studentId}
                     helperText={errors.studentId?.message || 'Will be auto-filled if email is your student ID'}
                     placeholder="e.g., 2310080030"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                        },
+                        '&.Mui-focused': {
+                          boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                        },
+                      },
+                    }}
                   />
                 </Grid>
               )}
@@ -221,6 +360,18 @@ const Register = () => {
                   {...register('department')}
                   error={!!errors.department}
                   helperText={errors.department?.message}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                      },
+                      '&.Mui-focused': {
+                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                      },
+                    },
+                  }}
                 />
               </Grid>
 
@@ -231,6 +382,18 @@ const Register = () => {
                   {...register('phone')}
                   error={!!errors.phone}
                   helperText={errors.phone?.message}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      borderRadius: 2,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.15)',
+                      },
+                      '&.Mui-focused': {
+                        boxShadow: '0 4px 20px rgba(102, 126, 234, 0.25)',
+                      },
+                    },
+                  }}
                 />
               </Grid>
             </Grid>
@@ -241,15 +404,51 @@ const Register = () => {
               variant="contained"
               size="large"
               disabled={loading}
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ 
+                mt: 3, 
+                mb: 2,
+                py: 1.5,
+                borderRadius: 2,
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                  boxShadow: '0 6px 25px rgba(102, 126, 234, 0.5)',
+                  transform: 'translateY(-2px)',
+                },
+                '&:active': {
+                  transform: 'translateY(0)',
+                },
+                '&.Mui-disabled': {
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  opacity: 0.6,
+                },
+              }}
             >
               {loading ? <CircularProgress size={24} /> : 'Register'}
             </Button>
 
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2">
+              <Typography variant="body2" color="text.secondary">
                 Already have an account?{' '}
-                <Link component={RouterLink} to="/login" underline="hover">
+                <Link 
+                  component={RouterLink} 
+                  to="/login" 
+                  underline="hover"
+                  sx={{ 
+                    fontWeight: 600,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                      textDecorationColor: '#667eea',
+                    },
+                  }}
+                >
                   Login here
                 </Link>
               </Typography>
@@ -260,5 +459,3 @@ const Register = () => {
     </Box>
   );
 };
-
-export default Register;

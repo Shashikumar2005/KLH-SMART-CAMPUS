@@ -250,22 +250,65 @@ const LostFound = () => {
         <Grid container spacing={3}>
           {filteredItems.map((item) => (
             <Grid item xs={12} sm={6} md={4} key={item._id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Card 
+                sx={{ 
+                  height: '100%', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                  border: '1px solid',
+                  borderColor: (theme) => 
+                    theme.palette.mode === 'light'
+                      ? 'rgba(0, 0, 0, 0.05)'
+                      : 'rgba(255, 255, 255, 0.05)',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    transform: 'translateY(-12px)',
+                    boxShadow: '0 16px 40px rgba(102, 126, 234, 0.25)',
+                    borderColor: getCategoryColor(item.category) === 'primary' ? '#1976d2' : undefined,
+                    '& .item-image': {
+                      transform: 'scale(1.1) rotate(-2deg)',
+                    },
+                  },
+                }}
+              >
                 {item.image && (
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={item.image}
-                    alt={item.title}
-                    sx={{ objectFit: 'cover' }}
-                  />
+                  <Box sx={{ overflow: 'hidden', height: 200, position: 'relative' }}>
+                    <CardMedia
+                      className="item-image"
+                      component="img"
+                      height="200"
+                      image={item.image}
+                      alt={item.title}
+                      sx={{ 
+                        objectFit: 'cover',
+                        transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 100%)',
+                      }}
+                    />
+                  </Box>
                 )}
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Box display="flex" justifyContent="space-between" mb={1}>
+                <CardContent sx={{ flexGrow: 1, p: 2.5 }}>
+                  <Box display="flex" justifyContent="space-between" mb={1.5}>
                     <Chip
                       label={item.category}
                       size="small"
                       color={getCategoryColor(item.category)}
+                      sx={{
+                        fontWeight: 600,
+                        borderRadius: 1.5,
+                      }}
                     />
                     <Chip
                       label={item.status === 'pending-approval' ? 'Pending Approval' : item.status}
@@ -276,6 +319,10 @@ const LostFound = () => {
                         'default'
                       }
                       icon={item.status === 'resolved' ? <CheckCircle /> : undefined}
+                      sx={{
+                        fontWeight: 600,
+                        borderRadius: 1.5,
+                      }}
                     />
                   </Box>
 
@@ -284,6 +331,13 @@ const LostFound = () => {
                       <IconButton
                         size="small"
                         onClick={() => handleOpenDialog(item)}
+                        sx={{
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'scale(1.2) rotate(10deg)',
+                            bgcolor: 'action.hover',
+                          },
+                        }}
                       >
                         <Edit fontSize="small" />
                       </IconButton>
@@ -291,6 +345,13 @@ const LostFound = () => {
                         size="small"
                         color="error"
                         onClick={() => handleDelete(item._id)}
+                        sx={{
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'scale(1.2)',
+                            bgcolor: 'error.lighter',
+                          },
+                        }}
                       >
                         <Delete fontSize="small" />
                       </IconButton>
@@ -360,6 +421,16 @@ const LostFound = () => {
                         variant="contained"
                         color="success"
                         onClick={() => handleApproveClaim(item._id)}
+                        sx={{
+                          borderRadius: 2,
+                          fontWeight: 600,
+                          boxShadow: '0 4px 12px rgba(46, 125, 50, 0.3)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 6px 20px rgba(46, 125, 50, 0.4)',
+                          },
+                        }}
                       >
                         Approve Claim
                       </Button>
@@ -368,6 +439,16 @@ const LostFound = () => {
                         variant="outlined"
                         color="error"
                         onClick={() => handleRejectClaim(item._id)}
+                        sx={{
+                          borderRadius: 2,
+                          fontWeight: 600,
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-2px)',
+                            bgcolor: 'error.light',
+                            color: 'white',
+                          },
+                        }}
                       >
                         Reject
                       </Button>
@@ -380,6 +461,16 @@ const LostFound = () => {
                       fullWidth
                       variant="contained"
                       onClick={() => handleClaim(item._id)}
+                      sx={{
+                        borderRadius: 2,
+                        fontWeight: 600,
+                        boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 6px 20px rgba(25, 118, 210, 0.4)',
+                        },
+                      }}
                     >
                       Request to Claim
                     </Button>
