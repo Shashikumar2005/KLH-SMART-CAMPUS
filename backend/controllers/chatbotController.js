@@ -38,8 +38,8 @@ exports.chat = async (req, res) => {
       });
     }
 
-    // Get the generative model
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    // Get the generative model (using gemini-1.5-flash for faster responses)
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // Prepare the conversation context
     let prompt = SYSTEM_PROMPT + '\n\n';

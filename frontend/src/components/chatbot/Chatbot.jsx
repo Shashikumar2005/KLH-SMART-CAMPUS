@@ -139,15 +139,17 @@ const Chatbot = () => {
               </Box>
             </Box>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Tooltip title="Clear Chat">
-                <IconButton
-                  size="small"
-                  sx={{ color: 'white' }}
-                  onClick={() => dispatch(clearMessages())}
-                  disabled={messages.length === 0}
-                >
-                  <ClearIcon />
-                </IconButton>
+              <Tooltip title={messages.length === 0 ? "No messages to clear" : "Clear Chat"}>
+                <span>
+                  <IconButton
+                    size="small"
+                    sx={{ color: 'white' }}
+                    onClick={() => dispatch(clearMessages())}
+                    disabled={messages.length === 0}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </span>
               </Tooltip>
               <Tooltip title="Close">
                 <IconButton
