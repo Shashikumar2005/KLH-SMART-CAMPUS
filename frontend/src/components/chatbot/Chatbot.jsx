@@ -12,6 +12,8 @@ import {
   Chip,
   CircularProgress,
   Collapse,
+  Tooltip,
+  Fade,
 } from '@mui/material';
 import {
   Chat as ChatIcon,
@@ -19,6 +21,7 @@ import {
   Send as SendIcon,
   SmartToy as BotIcon,
   Person as PersonIcon,
+  DeleteOutline as ClearIcon,
 } from '@mui/icons-material';
 import {
   toggleChatbot,
@@ -76,36 +79,44 @@ const Chatbot = () => {
   return (
     <>
       {/* Chatbot FAB */}
-      <Fab
-        color="primary"
-        aria-label="chat"
-        onClick={() => dispatch(toggleChatbot())}
-        sx={{
-          position: 'fixed',
-          bottom: 16,
-          right: 16,
-          zIndex: 1000,
-        }}
-      >
-        {isOpen ? <CloseIcon /> : <ChatIcon />}
-      </Fab>
+      <Tooltip title={isOpen ? "Close Chat" : "Open Campus Assistant"} placement="left">
+        <Fab
+          color="primary"
+          aria-label="chat"
+          onClick={() => dispatch(toggleChatbot())}
+          sx={{
+            position: 'fixed',
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.1)',
+            },
+          }}
+        >
+          {isOpen ? <CloseIcon /> : <ChatIcon />}
+        </Fab>
+      </Tooltip>
 
       {/* Chatbot Window */}
       <Collapse in={isOpen} timeout={300}>
-        <Paper
-          elevation={8}
-          sx={{
-            position: 'fixed',
-            bottom: 80,
-            right: 16,
-            width: { xs: 'calc(100% - 32px)', sm: 400 },
-            height: { xs: 'calc(100vh - 100px)', sm: 600 },
-            zIndex: 999,
-            display: 'flex',
-            flexDirection: 'column',
-            borderRadius: 2,
-          }}
-        >
+        <Fade in={isOpen}>
+          <Paper
+            elevation={8}
+            sx={{
+              position: 'fixed',
+              bottom: 80,
+              right: 16,
+              width: { xs: 'calc(100% - 32px)', sm: 400 },
+              height: { xs: 'calc(100vh - 100px)', sm: 600 },
+              zIndex: 999,
+              display: 'flex',
+              flexDirection: 'column',
+              borderRadius: 3,
+              overflow: 'hidden',
+            }}
+          >
           {/* Header */}
           <Box
             sx={{
@@ -115,25 +126,39 @@ const Chatbot = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              borderRadius: '8px 8px 0 0',
+              borderRadius: '12px 12px 0 0',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar sx={{ bgcolor: 'primary.dark' }}>
+              <Avatar sx={{ bgcolor: 'primary.dark', width: 40, height: 40 }}>
                 <BotIcon />
               </Avatar>
               <Box>
-                <Typography variant="h6">Campus Assistant</Typography>
+                <Typography variant="h6" fontWeight="bold">Campus Assistant</Typography>
                 <Typography variant="caption">Powered by Gemini AI</Typography>
               </Box>
             </Box>
-            <IconButton
-              size="small"
-              sx={{ color: 'white' }}
-              onClick={() => dispatch(clearMessages())}
-            >
-              <CloseIcon />
-            </IconButton>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Tooltip title="Clear Chat">
+                <IconButton
+                  size="small"
+                  sx={{ color: 'white' }}
+                  onClick={() => dispatch(clearMessages())}
+                  disabled={messages.length === 0}
+                >
+                  <ClearIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Close">
+                <IconButton
+                  size="small"
+                  sx={{ color: 'white' }}
+                  onClick={() => dispatch(toggleChatbot())}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
 
           {/* Messages Area */}
@@ -278,6 +303,7 @@ const Chatbot = () => {
             </Box>
           </Box>
         </Paper>
+        </Fade>
       </Collapse>
     </>
   );
