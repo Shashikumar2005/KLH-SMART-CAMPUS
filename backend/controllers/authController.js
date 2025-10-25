@@ -16,6 +16,26 @@ exports.register = async (req, res) => {
       });
     }
 
+    // Validate student email format (must be 10 digits followed by @klh.edu.in)
+    const emailPrefix = email.split('@')[0];
+    if (role === 'student' && !/^\d{10}$/.test(emailPrefix)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Student email must be a 10-digit number followed by @klh.edu.in (e.g., 2310080001@klh.edu.in)',
+      });
+    }
+
+    // Validate faculty email format (name followed by 4 digits)
+    if (role === 'faculty' && email.endsWith('@klh.edu.in')) {
+      const facultyPattern = /^[a-zA-Z]+\d{4}@klh\.edu\.in$/;
+      if (!facultyPattern.test(email)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Faculty email must be in format: nameXXXX@klh.edu.in (e.g., rajesh1234@klh.edu.in)',
+        });
+      }
+    }
+
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -32,16 +52,16 @@ exports.register = async (req, res) => {
     if (email.endsWith('@klh.edu.in')) {
       const emailPrefix = email.split('@')[0];
       
-      // Check if email starts with numbers (student)
-      if (/^\d/.test(emailPrefix)) {
+      // Check if email is 10 digits (student)
+      if (/^\d{10}$/.test(emailPrefix)) {
         userRole = 'student';
         // Auto-extract student ID from email if not provided
-        if (!studentId && /^\d+$/.test(emailPrefix)) {
+        if (!studentId) {
           autoDetectedStudentId = emailPrefix;
         }
       } 
-      // Check if email starts with letters (faculty)
-      else if (/^[a-zA-Z]/.test(emailPrefix)) {
+      // Check if email starts with letters followed by 4 digits (faculty)
+      else if (/^[a-zA-Z]+\d{4}$/.test(emailPrefix)) {
         userRole = 'faculty';
       }
     }

@@ -52,21 +52,23 @@ const Register = () => {
     if (emailValue && emailValue.endsWith('@klh.edu.in')) {
       const emailPrefix = emailValue.split('@')[0];
       
-      if (/^\d/.test(emailPrefix)) {
-        // Email starts with number - Student
+      // Check if email is exactly 10 digits (Student)
+      if (/^\d{10}$/.test(emailPrefix)) {
         setDetectedRole('student');
         setValue('role', 'student');
-        
-        // Auto-fill student ID if email is all numbers
-        if (/^\d+$/.test(emailPrefix)) {
-          setValue('studentId', emailPrefix);
-        }
-      } else if (/^[a-zA-Z]/.test(emailPrefix)) {
-        // Email starts with letter - Faculty
+        // Auto-fill student ID
+        setValue('studentId', emailPrefix);
+      } 
+      // Check if email is name followed by 4 digits (Faculty)
+      else if (/^[a-zA-Z]+\d{4}$/.test(emailPrefix)) {
         setDetectedRole('faculty');
         setValue('role', 'faculty');
         // Clear studentId for faculty
         setValue('studentId', '');
+      }
+      // Invalid format
+      else {
+        setDetectedRole(null);
       }
     } else {
       setDetectedRole(null);
@@ -206,8 +208,11 @@ const Register = () => {
                   type="email"
                   {...register('email')}
                   error={!!errors.email}
-                  helperText={errors.email?.message || 'Use your @klh.edu.in email'}
-                  placeholder="2310080030@klh.edu.in or yourname@klh.edu.in"
+                  helperText={
+                    errors.email?.message || 
+                    'Students: 10 digits (e.g., 2310080030@klh.edu.in) | Faculty: nameXXXX (e.g., rajesh1234@klh.edu.in)'
+                  }
+                  placeholder="2310080030@klh.edu.in or rajesh1234@klh.edu.in"
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
