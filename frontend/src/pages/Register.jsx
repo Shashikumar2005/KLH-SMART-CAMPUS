@@ -340,19 +340,19 @@ const Register = () => {
                       borderRadius: 2,
                       background: detectedRole === 'student' 
                         ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                        : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                        : 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)',
                       color: 'white',
                       textAlign: 'center',
                       boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                     }}
                   >
                     <Typography variant="body1" fontWeight="600">
-                      ✓ Detected as {detectedRole === 'student' ? '👨‍🎓 Student' : '👨‍🏫 Faculty'}
+                      {detectedRole === 'student' ? '✓ Detected as 👨‍🎓 Student' : '⚠️ Faculty Email Detected'}
                     </Typography>
-                    <Typography variant="caption">
+                    <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>
                       {detectedRole === 'student' 
                         ? 'Student ID will be automatically assigned from your email'
-                        : 'Faculty account with full teaching privileges'
+                        : '❌ Staff/Faculty registration is restricted. Only pre-registered staff members can login. Please contact administrator.'
                       }
                     </Typography>
                   </Box>
@@ -409,30 +409,43 @@ const Register = () => {
               fullWidth
               variant="contained"
               size="large"
-              disabled={loading}
+              disabled={loading || detectedRole === 'faculty'}
               sx={{ 
                 mt: 3, 
                 mb: 2,
                 py: 1.5,
                 borderRadius: 2,
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: detectedRole === 'faculty' 
+                  ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)'
+                  : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                  background: detectedRole === 'faculty'
+                    ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)'
+                    : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
                   boxShadow: '0 6px 25px rgba(102, 126, 234, 0.5)',
-                  transform: 'translateY(-2px)',
+                  transform: detectedRole === 'faculty' ? 'none' : 'translateY(-2px)',
                 },
                 '&:active': {
                   transform: 'translateY(0)',
                 },
                 '&.Mui-disabled': {
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  opacity: 0.6,
+                  background: detectedRole === 'faculty'
+                    ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)'
+                    : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  opacity: 0.7,
+                  color: 'white',
                 },
               }}
             >
-              {loading ? <CircularProgress size={24} /> : 'Register'}
+              {loading ? (
+                <CircularProgress size={24} />
+              ) : detectedRole === 'faculty' ? (
+                '🔒 Faculty Registration Disabled'
+              ) : (
+                'Register'
+              )}
             </Button>
 
             <Box sx={{ textAlign: 'center' }}>

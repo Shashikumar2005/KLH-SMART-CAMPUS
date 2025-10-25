@@ -45,6 +45,18 @@ exports.register = async (req, res) => {
       });
     }
 
+    // Restrict faculty registration - only pre-registered staff can exist
+    // Students can register freely, but faculty must be created by admin
+    const emailPrefix = email.split('@')[0];
+    const isFacultyEmail = /^[a-zA-Z]+\d{4}$/.test(emailPrefix) && email.endsWith('@klh.edu.in');
+    
+    if (isFacultyEmail) {
+      return res.status(403).json({
+        success: false,
+        message: 'Staff/Faculty registration is restricted. Please contact administrator to create your account.',
+      });
+    }
+
     // Auto-detect role based on email pattern if not explicitly provided
     let userRole = role || 'student'; // Default to student
     let autoDetectedStudentId = null;
