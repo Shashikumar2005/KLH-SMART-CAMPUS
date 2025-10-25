@@ -1,4 +1,8 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const Event = require('../models/Event');
+const LostFound = require('../models/LostFound');
+const Feedback = require('../models/Feedback');
+const User = require('../models/User');
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -24,6 +28,153 @@ Guidelines:
 
 Keep your responses clear, helpful, and relevant to campus life.`;
 
+// Helper function to fetch relevant campus data
+const getCampusData = async (message) => {
+  const lowerMessage = message.toLowerCase();
+  let contextData = '';
+
+  try {
+    // Fetch events data if query is about events
+    if (lowerMessage.includes('event') || lowerMessage.includes('workshop') || 
+        lowerMessage.includes('seminar') || lowerMessage.includes('happening')) {
+      const events = await Event.find({ 
+        date: { $gte: new Date() } 
+      })
+      .sort({ date: 1 })
+      .limit(10)
+      .populate('organizer', 'name department')
+      .select('title description date location category maxAttendees registeredUsers');
+
+      if (events.length > 0) {
+        contextData += '\n\n=== CURRENT EVENTS IN DATABASE ===\n';
+        events.forEach((event, index) => {
+          const eventDate = new Date(event.date).toLocaleDateString();
+          const spotsLeft = event.maxAttendees - event.registeredUsers.length;
+          contextData += `\n${index + 1}. ${event.title}`;
+          contextData += `\n   Date: ${eventDate}`;
+          contextData += `\n   Location: ${event.location}`;
+          contextData += `\n   Category: ${event.category}`;
+          contextData += `\n   Description: ${event.description}`;
+          contextData += `\n   Available Spots: ${spotsLeft}/${event.maxAttendees}`;
+          if (event.organizer) {
+            contextData += `\n   Organizer: ${event.organizer.name} (${event.organizer.department})`;
+          }
+          contextData += '\n';
+        });
+      }
+    }
+
+    // Fetch lost & found data
+    if (lowerMessage.includes('lost') || lowerMessage.includes('found') || lowerMessage.includes('item')) {
+      const lostItems = await LostFound.find({ 
+        status: 'active',
+        type: 'lost'
+      })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate('reportedBy', 'name')
+      .select('itemName description category location dateReported');
+
+      const foundItems = await LostFound.find({ 
+        status: 'active',
+        type: 'found'
+      })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .populate('reportedBy', 'name')
+      .select('itemName description category location dateReported');
+
+      if (lostItems.length > 0) {
+        contextData += '\n\n=== RECENTLY LOST ITEMS ===\n';
+        lostItems.forEach((item, index) => {
+          contextData += `\n${index + 1}. ${item.itemName}`;
+          contextData += `\n   Category: ${item.category}`;
+          contextData += `\n   Location: ${item.location}`;
+          contextData += `\n   Description: ${item.description}`;
+          contextData += `\n   Date: ${new Date(item.dateReported).toLocaleDateString()}`;
+          contextData += '\n';
+        });
+      }
+
+      if (foundItems.length > 0) {
+        contextData += '\n\n=== RECENTLY FOUND ITEMS ===\n';
+        foundItems.forEach((item, index) => {
+          contextData += `\n${index + 1}. ${item.itemName}`;
+          contextData += `\n   Category: ${item.category}`;
+          contextData += `\n   Location: ${item.location}`;
+          contextData += `\n   Description: ${item.description}`;
+          contextData += `\n   Date: ${new Date(item.dateReported).toLocaleDateString()}`;
+          contextData += '\n';
+        });
+      }
+    }
+
+    // Fetch feedback statistics
+    if (lowerMessage.includes('feedback') || lowerMessage.includes('suggestion') || lowerMessage.includes('complaint')) {
+      const feedbackStats = await Feedback.aggregate([
+        {
+          $group: {
+            _id: '$category',
+            count: { $sum: 1 },
+            pending: {
+              $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] }
+            },
+            resolved: {
+              $sum: { $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0] }
+            }
+          }
+        }
+      ]);
+
+      if (feedbackStats.length > 0) {
+        contextData += '\n\n=== FEEDBACK STATISTICS ===\n';
+        feedbackStats.forEach(stat => {
+          contextData += `\n${stat._id}: ${stat.count} total (${stat.pending} pending, ${stat.resolved} resolved)`;
+        });
+        contextData += '\n';
+      }
+
+      const recentFeedback = await Feedback.find()
+        .sort({ createdAt: -1 })
+        .limit(3)
+        .select('category message status priority createdAt');
+
+      if (recentFeedback.length > 0) {
+        contextData += '\n\n=== RECENT FEEDBACK ===\n';
+        recentFeedback.forEach((fb, index) => {
+          contextData += `\n${index + 1}. Category: ${fb.category}, Priority: ${fb.priority}, Status: ${fb.status}`;
+          contextData += `\n   Message: ${fb.message.substring(0, 100)}${fb.message.length > 100 ? '...' : ''}`;
+          contextData += '\n';
+        });
+      }
+    }
+
+    // Fetch user statistics
+    if (lowerMessage.includes('student') || lowerMessage.includes('faculty') || lowerMessage.includes('user')) {
+      const userStats = await User.aggregate([
+        {
+          $group: {
+            _id: '$role',
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+
+      if (userStats.length > 0) {
+        contextData += '\n\n=== USER STATISTICS ===\n';
+        userStats.forEach(stat => {
+          contextData += `${stat._id}: ${stat.count} users\n`;
+        });
+      }
+    }
+
+  } catch (error) {
+    console.error('Error fetching campus data:', error);
+  }
+
+  return contextData;
+};
+
 // @desc    Send message to chatbot
 // @route   POST /api/chatbot/query
 // @access  Private
@@ -38,13 +189,26 @@ exports.chat = async (req, res) => {
       });
     }
 
+    // Fetch relevant campus data based on the message
+    const campusData = await getCampusData(message);
+
     // Get the generative model
     const model = genAI.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
     });
 
     // Prepare the conversation context
-    let prompt = SYSTEM_PROMPT + '\n\n';
+    let prompt = SYSTEM_PROMPT;
+    
+    // Add real campus data to the context
+    if (campusData) {
+      prompt += '\n\n=== REAL-TIME CAMPUS DATA ===';
+      prompt += '\nUse this actual data from the campus database to answer user questions:';
+      prompt += campusData;
+      prompt += '\n\nIMPORTANT: When user asks about events, lost items, or feedback, use the REAL data provided above, not generic responses.';
+    }
+    
+    prompt += '\n\n=== CONVERSATION ===\n';
     
     // Add conversation history if provided
     if (conversationHistory && conversationHistory.length > 0) {
