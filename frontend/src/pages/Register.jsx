@@ -143,34 +143,6 @@ const Register = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  select
-                  label="Role"
-                  {...register('role')}
-                  error={!!errors.role}
-                  helperText={detectedRole ? '✓ Auto-detected from email' : errors.role?.message}
-                  defaultValue="student"
-                  disabled={!!detectedRole}
-                  InputProps={{
-                    endAdornment: detectedRole && (
-                      <InputAdornment position="end">
-                        <Chip 
-                          label="Auto-detected" 
-                          color="success" 
-                          size="small" 
-                          sx={{ mr: 3 }}
-                        />
-                      </InputAdornment>
-                    ),
-                  }}
-                >
-                  <MenuItem value="student">Student</MenuItem>
-                  <MenuItem value="faculty">Faculty</MenuItem>
-                </TextField>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
                   label="Password"
                   type={showPassword ? 'text' : 'password'}
                   {...register('password')}
