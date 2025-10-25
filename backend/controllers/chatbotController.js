@@ -40,13 +40,7 @@ exports.chat = async (req, res) => {
 
     // Get the generative model
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-pro',
-      generationConfig: {
-        temperature: 0.7,
-        topK: 40,
-        topP: 0.95,
-        maxOutputTokens: 1024,
-      },
+      model: 'gemini-2.5-flash',
     });
 
     // Prepare the conversation context
