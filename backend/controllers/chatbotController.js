@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const Event = require('../models/Event');
-const LostFound = require('../models/LostFound');
+const LostItem = require('../models/LostItem');
 const Feedback = require('../models/Feedback');
 const User = require('../models/User');
 
@@ -66,32 +66,32 @@ const getCampusData = async (message) => {
 
     // Fetch lost & found data
     if (lowerMessage.includes('lost') || lowerMessage.includes('found') || lowerMessage.includes('item')) {
-      const lostItems = await LostFound.find({ 
+      const lostItems = await LostItem.find({ 
         status: 'active',
         type: 'lost'
       })
       .sort({ createdAt: -1 })
       .limit(5)
       .populate('reportedBy', 'name')
-      .select('itemName description category location dateReported');
+      .select('title description category location date');
 
-      const foundItems = await LostFound.find({ 
+      const foundItems = await LostItem.find({ 
         status: 'active',
         type: 'found'
       })
       .sort({ createdAt: -1 })
       .limit(5)
       .populate('reportedBy', 'name')
-      .select('itemName description category location dateReported');
+      .select('title description category location date');
 
       if (lostItems.length > 0) {
         contextData += '\n\n=== RECENTLY LOST ITEMS ===\n';
         lostItems.forEach((item, index) => {
-          contextData += `\n${index + 1}. ${item.itemName}`;
+          contextData += `\n${index + 1}. ${item.title}`;
           contextData += `\n   Category: ${item.category}`;
           contextData += `\n   Location: ${item.location}`;
           contextData += `\n   Description: ${item.description}`;
-          contextData += `\n   Date: ${new Date(item.dateReported).toLocaleDateString()}`;
+          contextData += `\n   Date: ${new Date(item.date).toLocaleDateString()}`;
           contextData += '\n';
         });
       }
@@ -99,11 +99,11 @@ const getCampusData = async (message) => {
       if (foundItems.length > 0) {
         contextData += '\n\n=== RECENTLY FOUND ITEMS ===\n';
         foundItems.forEach((item, index) => {
-          contextData += `\n${index + 1}. ${item.itemName}`;
+          contextData += `\n${index + 1}. ${item.title}`;
           contextData += `\n   Category: ${item.category}`;
           contextData += `\n   Location: ${item.location}`;
           contextData += `\n   Description: ${item.description}`;
-          contextData += `\n   Date: ${new Date(item.dateReported).toLocaleDateString()}`;
+          contextData += `\n   Date: ${new Date(item.date).toLocaleDateString()}`;
           contextData += '\n';
         });
       }
